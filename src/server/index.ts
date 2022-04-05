@@ -1,20 +1,14 @@
 import {
   onOpen,
-  openDialog,
-  openDialogBootstrap,
-  openAboutSidebar,
+  openSidebar,
 } from './ui';
 
-import { getSheetsData, addSheet, deleteSheet, setActiveSheet } from './sheets';
+import { docData, insertPara } from './doc_funs';
 
 // Public functions must be exported as named exports
 export {
   onOpen,
-  openDialog,
-  openDialogBootstrap,
-  openAboutSidebar,
-  getSheetsData,
-  addSheet,
-  deleteSheet,
-  setActiveSheet,
+  openSidebar,
+  docData,
+  insertPara
 };

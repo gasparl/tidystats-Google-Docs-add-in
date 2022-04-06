@@ -1,20 +1,31 @@
 import React from 'react';
+import { Logo } from "./Logo"
+import { Actions } from "./Actions"
 
-import styled from "styled-components"
-import { initializeIcons } from "@fluentui/font-icons-mdl2"
+import styled from "styled-components";
+import { initializeIcons } from "@fluentui/font-icons-mdl2";
 
-initializeIcons()
+initializeIcons();
 
-import logoSrc from "../assets/tidystats-icon.svg"
+import logoSrc from "../assets/tidystats-icon.svg";
 
 const Main = styled.div`
   margin: 0.5rem;
 `
 
-const App = () => (
+const App = () => {
+    return(
+  <>
+  <Logo title="tidystats" />
   <Main>
-    Something34 APP 3
-  </Main>
-);
+  <p>
+    Try 99
+    </p>
 
-export default App;
+        {<Actions />}
+
+  </Main>
+  </>
+)};
+
+export { App};

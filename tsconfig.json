@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "types": ["gas-types-detailed"],
-    "jsx": "react",
+    "jsx": "react-jsx",
     "esModuleInterop": true
   }
 }

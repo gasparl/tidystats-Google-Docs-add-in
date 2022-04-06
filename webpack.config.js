@@ -39,13 +39,13 @@ const serverEntry = './src/server/index.ts';
 const copyAppscriptEntry = './appsscript.json';
 
 // define live development dialog paths
-const devDialogEntry = './dev/index.js';
+const devDialogEntry = './dev/index.tsx';
 
 // define client entry points and output names
 const clientEntrypoints = [
   {
     name: 'CLIENT - Sidebar',
-    entry: './src/client/sidebar-page/index.js',
+    entry: './src/client/sidebar-page/index.tsx',
     filename: 'sidebar-page',
     template: './src/client/sidebar-page/index.html',
   }
@@ -142,10 +142,23 @@ const clientConfig = ({ isDevClientWrapper }) => ({
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
+      {
+          test: /\.svg$/,
+          use: [
+            {
+              loader: "babel-loader"
+            },
+            {
+              loader: "react-svg-loader",
+              options: {
+                jsx: true // true outputs JSX tags
+              }
+            }
+          ]
+      },
     ],
   },
 });
-
 // DynamicCdnWebpackPlugin settings
 // these settings help us load 'react', 'react-dom' and the packages defined below from a CDN
 // see https://github.com/enuchi/React-Google-Apps-Script#adding-new-libraries-and-packages
@@ -303,6 +316,20 @@ const serverConfig = {
         use: {
           loader: 'babel-loader',
         },
+      },
+      {
+          test: /\.svg$/,
+          use: [
+            {
+              loader: "babel-loader"
+            },
+            {
+              loader: "react-svg-loader",
+              options: {
+                jsx: true // true outputs JSX tags
+              }
+            }
+          ]
       },
     ],
   },

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TS_sidebar from './components/tsSidebar';
+import App from './components/App';
 import './index.css';
 
-ReactDOM.render(<TS_sidebar />, document.getElementById('index'));
+ReactDOM.render(<App />, document.getElementById('index'));

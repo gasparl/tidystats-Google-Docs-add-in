@@ -2,12 +2,11 @@ import React from 'react';
 
 const TS_sidebar = () => (
   <div>
-    <p>
+    <p>NEW
       Click the button below to upload your statistics created with the tidystats R package.
     </p>
     <p>
-
-    <a>Upload statistics</a>
+    <button id="upload_stats">Upload statistics</button>
     </p>
     <p>
     <h3>Support</h3>

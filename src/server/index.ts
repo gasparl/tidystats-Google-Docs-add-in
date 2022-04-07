@@ -3,16 +3,15 @@ import {
   openSidebar,
 } from './ui';
 
-import { docData, insertPara } from './doc_funs';
-import { insertFullCitation } from './insertFullCitation';
-import { insertInTextCitation } from './insertInTextCitation';
+import { insertFullCitation } from './functions/insertFullCitation';
+import { insertInTextCitation } from './functions/insertInTextCitation';
+import { updateNamedRange } from './functions/updateNamedRange';
 
 // Public functions must be exported as named exports
 export {
   onOpen,
   openSidebar,
-  docData,
-  insertPara,
   insertFullCitation,
-  insertInTextCitation
+  insertInTextCitation,
+  updateNamedRange
 };

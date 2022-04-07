@@ -7,25 +7,25 @@ import { initializeIcons } from "@fluentui/font-icons-mdl2";
 
 initializeIcons();
 
-import logoSrc from "../assets/tidystats-icon.svg";
-
 const Main = styled.div`
   margin: 0.5rem;
 `
 
 const App = () => {
-    return(
-  <>
-  <Logo title="tidystats" />
-  <Main>
-  <p>
-    Try 99
-    </p>
 
-        {<Actions />}
+    return (
+        <>
+            <Logo title="tidystats" />
+            <Main>
+                <p>
+                    Upload statistics...2
+                </p>
 
-  </Main>
-  </>
-)};
+                {<Actions />}
 
-export { App};
+            </Main>
+        </>
+    )
+};
+
+export { App };

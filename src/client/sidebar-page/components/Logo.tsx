@@ -29,7 +29,7 @@ const Logo = (props: LogoProps) => {
 
   return (
     <LogoDiv>
-      <LogoImage src='https://drive.google.com/uc?id=122ONu3FPJhPu0enlMK8QmivjOWEf-eNY' alt={title} title={title} />
+      <LogoImage src='https://drive.google.com/uc?id=122ONu3FPJhPu0enlMK8QmivjOWEf-eNY' alt='' title={title} />
       <LogoTitle>{title}</LogoTitle>
     </LogoDiv>
   )

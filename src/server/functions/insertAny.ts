@@ -1,8 +1,8 @@
-export const insertAny = (textToInsert, textName = null) => {
+export const insertAny = (textToInsert, textName = null, range = null) => {
     var doc = DocumentApp.getActiveDocument();
     var cursor = doc.getCursor();
-    var elToName = null;
-    if (cursor) {
+    var rangeBuilder = null;
+    if (cursor && (range === null)) {
         // Attempt to insert text at the cursor position. If the insertion returns null, the cursor's
         // containing element doesn't allow insertions, so show the user an error message.
         var cElement = cursor.insertText(textToInsert);
@@ -10,10 +10,16 @@ export const insertAny = (textToInsert, textName = null) => {
             textName = null
             DocumentApp.getUi().alert('Cannot insert text here.');
         } else {
-            elToName = cElement;
+            rangeBuilder = doc.newRange();
+            rangeBuilder.addElement(cElement);
         }
     } else {
-        var selection = DocumentApp.getActiveDocument().getSelection();
+        var selection;
+        if (range === null) {
+            selection = DocumentApp.getActiveDocument().getSelection();
+        } else {
+            selection = range;
+        }
         if (!selection) {
             textName = null
             DocumentApp.getUi().alert('Insertion omitted: A cursor placed in the text or a selected text is needed to indicate the position of the insertion.');
@@ -29,8 +35,9 @@ export const insertAny = (textToInsert, textName = null) => {
                     tElement.deleteText(startIndex, endIndex);
                     if (replace) {
                         tElement.insertText(startIndex, textToInsert);
-                        if (elToName === null) {
-                            elToName = tElement;
+                        if (rangeBuilder === null) {
+                            rangeBuilder = doc.newRange();
+                            rangeBuilder.addElement(tElement, startIndex, startIndex + textToInsert.length - 1);
                         }
                         replace = false;
                     }
@@ -40,15 +47,17 @@ export const insertAny = (textToInsert, textName = null) => {
                     if (replace && eElement.editAsText) {
                         eElement.clear().asText().setText(textToInsert);
                         replace = false;
-                        if (elToName === null) {
-                            elToName = eElement;
+                        if (rangeBuilder === null) {
+                            rangeBuilder = doc.newRange();
+                            rangeBuilder.addElement(eElement);
                         }
                     } else {
                         if (replace && i === elements.length - 1) {
                             var parent = eElement.getParent();
                             parent[parent.insertText ? 'insertText' : 'insertParagraph'](parent.getChildIndex(eElement), textToInsert);
-                            if (elToName === null) {
-                                elToName = eElement;
+                            if (rangeBuilder === null) {
+                                rangeBuilder = doc.newRange();
+                                rangeBuilder.addElement(eElement);
                             }
                             replace = false; //not really necessary since it's the last one
                         }
@@ -59,13 +68,8 @@ export const insertAny = (textToInsert, textName = null) => {
         }
     }
     if (textName !== null) {
-        if (elToName === null) {
-            console.log('No element ID assigned.');
-        } else {
-            var rangeBuilder = doc.newRange();
-            rangeBuilder.addElement(elToName);
-            var savedInsert = rangeBuilder.build()
-            doc.addNamedRange(textName, savedInsert)
+        if (rangeBuilder !== null) {
+            doc.addNamedRange(textName, rangeBuilder.build());
         }
     }
 }

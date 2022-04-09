@@ -34,12 +34,10 @@ export const insertAny = (textToInsert, textName = null, range = null) => {
                     var text = tElement.getText().substring(startIndex, endIndex + 1);
                     DocumentApp.getUi().alert(text);
                     if (replace) {
-                        tElement.insertText(endIndex + 1, 'x');
-                        tElement.deleteText(startIndex, endIndex);
-                        tElement.insertText(startIndex + 1, textToInsert);
+                        tElement.insertText(endIndex + 1, textToInsert);
                         if (rangeBuilder === null) {
                             rangeBuilder = doc.newRange();
-                            rangeBuilder.addElement(tElement, startIndex + 1, startIndex + 1 + textToInsert.length - 1);
+                            rangeBuilder.addElement(tElement, endIndex + 1, endIndex + 1 + textToInsert.length - 1);
                         }
                         replace = false;
                         tElement.deleteText(startIndex, startIndex);

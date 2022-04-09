@@ -65,11 +65,11 @@ const Actions = () => {
         {bibTexButtonLabel}
       </ActionButton>
 
-        <ActionButton onClick={() => {serverFunctions.updateNamedRange('tidystats_intext', 'new_' + Date.now() + '#')
+        <ActionButton onClick={() => {serverFunctions.updateNamedRange('tidystats_intext', 'updated intext ' + Date.now() + ' end')
         .catch(alert);}}>
           Update intext
         </ActionButton>
-      <ActionButton onClick={() => {serverFunctions.updateNamedRange('tidystats_full', 'newFull_' + Date.now() + '!')
+      <ActionButton onClick={() => {serverFunctions.updateNamedRange('tidystats_full', 'updated full ' + Date.now() + ' end')
       .catch(alert);}}>
         Update full
       </ActionButton>

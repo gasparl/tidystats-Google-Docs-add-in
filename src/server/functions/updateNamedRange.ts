@@ -5,6 +5,7 @@ export const updateNamedRange = (textName, newText) => {
     var myNamedRanges = doc.getNamedRanges(textName);
     for (var i = 0; i < myNamedRanges.length; i++) {
         var range = myNamedRanges[i].getRange();
+        myNamedRanges[i].remove();
         insertAny(newText, textName, range);
     }
 }

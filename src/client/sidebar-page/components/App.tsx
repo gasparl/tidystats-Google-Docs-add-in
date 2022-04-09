@@ -18,7 +18,7 @@ const App = () => {
             <Logo title="tidystats" />
             <Main>
                 <p>
-                    Upload statistics...2
+                    Preliminary template...2
                 </p>
 
                 {<Actions />}

@@ -32,14 +32,19 @@ export const insertAny = (textToInsert, textName = null, range = null) => {
                     var startIndex = elements[i].getStartOffset();
                     var endIndex = elements[i].getEndOffsetInclusive();
                     var text = tElement.getText().substring(startIndex, endIndex + 1);
-                    tElement.deleteText(startIndex, endIndex);
+                    DocumentApp.getUi().alert(text);
                     if (replace) {
-                        tElement.insertText(startIndex, textToInsert);
+                        tElement.insertText(endIndex + 1, 'x');
+                        tElement.deleteText(startIndex, endIndex);
+                        tElement.insertText(startIndex + 1, textToInsert);
                         if (rangeBuilder === null) {
                             rangeBuilder = doc.newRange();
-                            rangeBuilder.addElement(tElement, startIndex, startIndex + textToInsert.length - 1);
+                            rangeBuilder.addElement(tElement, startIndex + 1, startIndex + 1 + textToInsert.length - 1);
                         }
                         replace = false;
+                        tElement.deleteText(startIndex, startIndex);
+                    } else {
+                        tElement.deleteText(startIndex, endIndex);
                     }
                 } else {
                     var eElement: any = elements[i].getElement();
@@ -47,18 +52,18 @@ export const insertAny = (textToInsert, textName = null, range = null) => {
                     if (replace && eElement.editAsText) {
                         eElement.clear().asText().setText(textToInsert);
                         replace = false;
-                        if (rangeBuilder === null) {
-                            rangeBuilder = doc.newRange();
-                            rangeBuilder.addElement(eElement);
-                        }
+                        // if (rangeBuilder === null) {
+                        //     rangeBuilder = doc.newRange();
+                        //     rangeBuilder.addElement(eElement);
+                        // }
                     } else {
                         if (replace && i === elements.length - 1) {
                             var parent = eElement.getParent();
                             parent[parent.insertText ? 'insertText' : 'insertParagraph'](parent.getChildIndex(eElement), textToInsert);
-                            if (rangeBuilder === null) {
-                                rangeBuilder = doc.newRange();
-                                rangeBuilder.addElement(eElement);
-                            }
+                            // if (rangeBuilder === null) {
+                            //     rangeBuilder = doc.newRange();
+                            //     rangeBuilder.addElement(eElement);
+                            // }
                             replace = false; //not really necessary since it's the last one
                         }
                         eElement.removeFromParent();
@@ -67,9 +72,7 @@ export const insertAny = (textToInsert, textName = null, range = null) => {
             }
         }
     }
-    if (textName !== null) {
-        if (rangeBuilder !== null) {
-            doc.addNamedRange(textName, rangeBuilder.build());
-        }
+    if (textName !== null && rangeBuilder !== null) {
+        doc.addNamedRange(textName, rangeBuilder.build());
     }
 }

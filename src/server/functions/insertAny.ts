@@ -40,10 +40,9 @@ export const insertAny = (textToInsert, textName = null, range = null) => {
                             rangeBuilder.addElement(tElement, endIndex + 1, endIndex + 1 + textToInsert.length - 1);
                         }
                         replace = false;
-                        tElement.deleteText(startIndex, startIndex);
-                    } else {
-                        tElement.deleteText(startIndex, endIndex);
                     }
+                    tElement.deleteText(startIndex, endIndex);
+
                 } else {
                     var eElement: any = elements[i].getElement();
                     // if not specified as "any", throws type errors for some reason

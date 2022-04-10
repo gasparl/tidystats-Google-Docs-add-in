@@ -3,6 +3,8 @@ import { PrimaryButton } from "@fluentui/react/lib/Button"
 import { FontSizes, FontWeights } from "@fluentui/theme"
 import styled from "styled-components"
 
+import { Tidystats } from "../classes/Tidystats"
+
 import { serverFunctions } from '../../utils/serverFunctions';
 
 const ActionHeader = styled.h3`
@@ -19,6 +21,9 @@ const ActionButton = styled(PrimaryButton)`
   min-width: 180px;
 `
 
+type ActionsProps = {
+  tidystats: Tidystats
+}
 
 const Actions = () => {
 
@@ -42,6 +47,7 @@ const Actions = () => {
     }, 2000)
   }
 
+
   return (
     <>
       <ActionHeader>Actions:</ActionHeader>
@@ -49,29 +55,21 @@ const Actions = () => {
         Automatically update all statistics in your document after uploading a
         new statistics file.
       </ActionInstructions>
+      <ActionButton onClick={() => serverFunctions.updateStatistics(tidystats).catch()}>
+        Update statistics
+      </ActionButton>
       <ActionInstructions>
         Was tidystats useful to you? If so, please consider citing it. Thanks!
       </ActionInstructions>
 
-      <ActionButton onClick={() => {serverFunctions.insertInTextCitation()
-      .catch(alert);} }>
+      <ActionButton onClick={() => serverFunctions.insertInTextCitation().catch()}>
         Insert in-text citation
       </ActionButton>
-      <ActionButton onClick={() => {serverFunctions.insertFullCitation()
-      .catch(alert);}}>
+      <ActionButton onClick={() => serverFunctions.insertFullCitation().catch()}>
         Insert full citation
       </ActionButton>
       <ActionButton onClick={handleBibTexClick}>
         {bibTexButtonLabel}
-      </ActionButton>
-
-        <ActionButton onClick={() => {serverFunctions.updateNamedRange('tidystats_intext', 'updated intext ' + Date.now() + ' end')
-        .catch(alert);}}>
-          Update intext
-        </ActionButton>
-      <ActionButton onClick={() => {serverFunctions.updateNamedRange('tidystats_full', 'updated full ' + Date.now() + ' end')
-      .catch(alert);}}>
-        Update full
       </ActionButton>
     </>
   )

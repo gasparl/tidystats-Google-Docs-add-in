@@ -1,4 +1,4 @@
-import { Statistic, RangedStatistic } from "../classes/Statistic"
+import { Statistic, RangedStatistic } from "../../client/sidebar-page/classes/Statistic"
 
 const SMOL = ["p", "r", "R²"]
 const INTEGERS = ["df", "df numerator", "df denominator"]

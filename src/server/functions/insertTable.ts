@@ -1,5 +1,5 @@
-import { Group } from "../classes/Group"
-import { serverFunctions } from '../../utils/serverFunctions';
+import { Group } from "../../client/sidebar-page/classes/Group"
+import { formatValue } from './formatValue';
 
 const insertTable = async (name: string, groups?: Group[]) => {
   Word.run(async (context) => {
@@ -48,7 +48,7 @@ const insertTable = async (name: string, groups?: Group[]) => {
             .insertContentControl()
           value.tag = statistic.identifier
           value.insertText(
-            serverFunctions.formatValue(statistic, 2).catch(alert),
+            formatValue(statistic, 2),
             Word.InsertLocation.replace
           )
         })

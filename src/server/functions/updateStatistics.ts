@@ -1,7 +1,6 @@
-import { Tidystats } from "../classes/Tidystats"
+import { Tidystats } from "../../client/sidebar-page/classes/Tidystats"
 
-import { serverFunctions } from '../../utils/serverFunctions';
-
+import { formatValue } from './formatValue';
 
 const updateStatistics = async (tidystats: Tidystats) => {
   Word.run(async (context) => {
@@ -29,7 +28,7 @@ const updateStatistics = async (tidystats: Tidystats) => {
             bound = components.pop()
           }
 
-          const value = serverFunctions.formatValue(statistic, 2, bound as "lower" | "upper").catch(alert)
+          const value = formatValue(statistic, 2, bound as "lower" | "upper")
 
           // Insert text
           item.insertText(value, Word.InsertLocation.replace)

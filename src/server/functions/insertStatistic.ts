@@ -1,9 +1,8 @@
 import { insertPlain } from './insertPlain';
 
-export const insertStatistic = (statistic: string, id: string, suffix: string = " ") => {
+export const insertStatistic = (statistic: string, id: string) => {
     var doc = DocumentApp.getActiveDocument();
     var cursor = doc.getCursor();
-    var rangeBuilder = null;
     if (!cursor) {
         insertPlain('');
         insertStatistic(statistic, id, suffix);
@@ -20,10 +19,10 @@ export const insertStatistic = (statistic: string, id: string, suffix: string = 
             var text = tElement.getText().substring(startIndex, endIndex + 1);
             DocumentApp.getUi().alert(text);
 
-            tElement.insertText(endIndex + 1, suffix);
+            tElement.insertText(endIndex + 1, " ");
 
-            rangeBuilder = doc.newRange();
-            rangeBuilder.addElement(tElement, startIndex + 1, endIndex);
+            var rangeBuilder = doc.newRange();
+            rangeBuilder.addElement(tElement, startIndex, endIndex + 1);
 
             doc.addNamedRange(id, rangeBuilder.build());
         }

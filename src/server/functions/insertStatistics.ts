@@ -1,166 +1,154 @@
 type StatisticProps = {
-  name: string
-  identifier: string
-  symbol: string
-  subscript?: string
-  value: string
-  checked: boolean
+    name: string
+    identifier: string
+    symbol: string
+    subscript?: string
+    value: string
+    checked: boolean
 }
 
-const insertStatistics = async (statistics: StatisticProps[]) => {
-  Word.run(async (context) => {
-    const range = context.document.getSelection()
-    let elements
+const doc = DocumentApp.getActiveDocument();
 
-    // Filter out the unchecked statistics
-    elements = statistics.filter(
-      (statistic: StatisticProps) => statistic.checked
-    )
+const insertNamedRange = (statistic: string, id: string, suffix: string) => {
+    var cursor = doc.getCursor();
+    var cElement = cursor.insertText(statistic);
+    if (!cElement) {
+        DocumentApp.getUi().alert('Cannot insert text here.');
+    } else {
+        tElement.setItalic(false);
+        var tElement = cElement.asText();
+        var startIndex = tElement.getStartOffset();
+        var endIndex = tElement.getEndOffsetInclusive();
+        var text = tElement.getText().substring(startIndex, endIndex + 1);
+        // DocumentApp.getUi().alert(text);
 
-    // Filter out the degrees of freedom if there's a test statistic (e.g., t, F)
-    if (
-      elements.some(
-        (statistic: StatisticProps) => statistic.name === "statistic"
-      )
-    ) {
-      elements = elements.filter(
-        (statistic: StatisticProps) =>
-          !["df", "df numerator", "df denominator"].includes(statistic.name)
-      )
+        tElement.insertText(endIndex + 1, suffix);
+
+        var rangeBuilder = doc.newRange();
+        rangeBuilder.addElement(tElement, startIndex, endIndex + 1);
+
+        doc.addNamedRange(id, rangeBuilder.build());
+        var txtEl = doc.getCursor().getElement();
+        var txtOff = doc.getCursor().getOffset();
+        var pos = doc.newPosition(txtEl, txtOff + 1);
+        doc.setCursor(pos);
     }
+}
 
-    // If both the lower and upper bound of an interval are present, remove one
-    const lower = statistics.find((x: StatisticProps) => x.name === "lower")
-    const upper = statistics.find((x: StatisticProps) => x.name === "upper")
+const appendText = (newText, italic = false) => {
+    var txt = doc.getCursor().insertText(newText)
+    txt.setItalic(italic);
+    var txtEl = doc.getCursor().getElement();
+    var txtOff = doc.getCursor().getOffset();
+    var pos = doc.newPosition(txtEl, txtOff + 1);
+    doc.setCursor(pos);
+    return (txt)
+}
 
-    if (lower && upper) {
-      elements = elements.filter(
-        (statistic: StatisticProps) => statistic.name !== "upper"
-      )
-    }
+const insertStatistics = (statistics: StatisticProps[]) => {
+    var doc = DocumentApp.getActiveDocument();
+    if (!cursor) {
+        insertPlain('');
+        insertStatistics(statistics);
+        //DocumentApp.getUi().alert('Please choose a position by placing your cursor in the text.');
+    } else {
+        const range = context.document.getSelection()
 
-    // Loop over the remaining elements and insert them
-    elements.forEach((statistic: StatisticProps, i: number) => {
-      // Add a comma starting after the first element
-      if (i !== 0) {
-        const comma = range.getRange()
-        comma.insertText(", ", "End")
-      }
+        // Filter out the unchecked statistics
+        let elements = statistics.filter(
+            (statistic: StatisticProps) => statistic.checked
+        )
 
-      // Add the degrees of freedom in parentheses if there's a test statistic
-      const lower = statistics.find((x: StatisticProps) => x.name === "lower")
-      const upper = statistics.find((x: StatisticProps) => x.name === "upper")
-
-      if (statistic.name === "lower" && lower && upper) {
-        const interval = range.getRange()
-        interval.insertText(statistic.symbol, Word.InsertLocation.end)
-        interval.insertText(" [", "End")
-
-        const lowerRange = range.getRange()
-        const lowerCC = lowerRange.insertContentControl()
-        lowerCC.insertText(lower.value, Word.InsertLocation.start)
-
-        const intervalComma = range.getRange()
-        intervalComma.insertText(", ", "End")
-
-        const upperRange = range.getRange()
-        const upperCC = upperRange.insertContentControl()
-        upperCC.insertText(upper.value, Word.InsertLocation.start)
-
-        const rightBracket = range.getRange("End")
-        rightBracket.insertText("]", "End")
-      } else {
-        if (statistic.name === "statistic") {
-          if (
-            statistic.symbol === "t" &&
-            statistics.find((x: StatisticProps) => x.name === "df")
-          ) {
-            const name = range.getRange("End")
-            name.insertText(statistic.symbol, "End")
-            name.font.italic = true
-
-            const parenthesisLeft = range.getRange("End")
-            parenthesisLeft.insertText("(", "End")
-            parenthesisLeft.font.italic = false
-
-            const df = statistics.find((x: StatisticProps) => x.name === "df")
-            if (df) {
-              const dfValue = range.getRange("End")
-              const dfValueCC = dfValue.insertContentControl()
-              dfValueCC.insertText(df.value, Word.InsertLocation.replace)
-            }
-
-            const parenthesisRight = range.getRange("End")
-            parenthesisRight.insertText(")", "End")
-          } else if (
-            statistic.symbol === "F" &&
-            statistics.find((x: StatisticProps) => x.name === "df numerator") &&
-            statistics.find((x: StatisticProps) => x.name === "df denominator")
-          ) {
-            const name = range.getRange("End")
-            name.insertText(statistic.symbol, "End")
-            name.font.italic = true
-
-            const parenthesisLeft = range.getRange("End")
-            parenthesisLeft.insertText("(", "End")
-            parenthesisLeft.font.italic = false
-
-            const dfNum = statistics.find(
-              (x: StatisticProps) => x.name === "df numerator"
+        // Filter out the degrees of freedom if there's a test statistic (e.g., t, F)
+        if (
+            elements.some(
+                (statistic: StatisticProps) => statistic.name === "statistic"
             )
-            if (dfNum) {
-              const dfValue = range.getRange("End")
-              const dfValueCC = dfValue.insertContentControl()
-              dfValueCC.insertText(dfNum.value, Word.InsertLocation.replace)
-            }
-
-            const dfComma = range.getRange()
-            dfComma.insertText(", ", "End")
-
-            const dfDen = statistics.find(
-              (x: StatisticProps) => x.name === "df denominator"
+        ) {
+            elements = elements.filter(
+                (statistic: StatisticProps) =>
+                    !["df", "df numerator", "df denominator"].includes(statistic.name)
             )
-            if (dfDen) {
-              const dfValue = range.getRange()
-              const dfValueCC = dfValue.insertContentControl()
-              dfValueCC.insertText(dfDen.value, Word.InsertLocation.replace)
-            }
-
-            const parenthesisRight = range.getRange()
-            parenthesisRight.insertText(")", "End")
-          }
-        } else {
-          const name = range.getRange()
-          name.insertText(statistic.symbol, "End")
-          name.font.italic = true
-
-          if (statistic.subscript) {
-            const subscript = range.getRange()
-            subscript.insertText(statistic.subscript, "End")
-            subscript.font.subscript = true
-          }
         }
 
-        // Insert an equal sign and set the style back to normal
-        const equal = range.getRange()
-        equal.insertText(" = ", "End")
-        equal.font.italic = false
-        equal.font.subscript = false
+        // If both the lower and upper bound of an interval are present, remove one
+        const lower = statistics.find((x: StatisticProps) => x.name === "lower")
+        const upper = statistics.find((x: StatisticProps) => x.name === "upper")
 
-        // Insert the value as a content control
-        const value = range.getRange()
-        const valueCC = value.insertContentControl()
-        valueCC.insertText(statistic.value, Word.InsertLocation.end)
-      }
-    })
+        if (lower && upper) {
+            elements = elements.filter(
+                (statistic: StatisticProps) => statistic.name !== "upper"
+            )
+        }
 
-    return context.sync
-  }).catch(function (error) {
-    console.log("Error: " + error)
-    if (error instanceof OfficeExtension.Error) {
-      console.log("Debug info: " + JSON.stringify(error.debugInfo))
+        // Loop over the remaining elements and insert them
+        elements.forEach((statistic: StatisticProps, i: number) => {
+
+            // Add the degrees of freedom in parentheses if there's a test statistic
+            const lower = statistics.find((x: StatisticProps) => x.name === "lower")
+            const upper = statistics.find((x: StatisticProps) => x.name === "upper")
+
+            if (statistic.name === "lower" && lower && upper) {
+                appendText(statistic.symbol)
+                appendText(" [")
+                insertNamedRange(statistic = lower.value, id = lower.identifier, suffix = ',')
+                insertNamedRange(statistic = upper.value, id = upper.identifier, suffix = ']')
+            } else {
+                if (statistic.name === "statistic") {
+                    if (
+                        statistic.symbol === "t" &&
+                        statistics.find((x: StatisticProps) => x.name === "df")
+                    ) {
+                        appendText(statistic.symbol, true)
+                        appendText("(")
+
+                        const df = statistics.find((x: StatisticProps) => x.name === "df")
+                        if (df) {
+                            insertNamedRange(statistic = df.value, id = df.identifier, suffix = ')')
+                        }
+                    } else if (
+                        statistic.symbol === "F" &&
+                        statistics.find((x: StatisticProps) => x.name === "df numerator") &&
+                        statistics.find((x: StatisticProps) => x.name === "df denominator")
+                    ) {
+                        appendText(statistic.symbol, true)
+                        appendText("(")
+
+                        const dfNum = statistics.find(
+                            (x: StatisticProps) => x.name === "df numerator"
+                        )
+                        if (dfNum) {
+                            insertNamedRange(statistic = dfNum.value, id = dfNum.identifier, suffix = ', ')
+                        }
+                        const dfDen = statistics.find(
+                            (x: StatisticProps) => x.name === "df denominator"
+                        )
+                        if (dfDen) {
+                            insertNamedRange(statistic = dfDen.value, id = dfDen.identifier, suffix = ')')
+                        }
+                    }
+                } else {
+                    appendText(statistic.symbol, true)
+                    if (statistic.subscript) {
+                        appendText(statistic.subscript).setTextAlignment(DocumentApp.TextAlignment.SUPERSCRIPT);
+                    }
+                }
+
+                // Insert an equal sign and set the style back to normal
+                appendText(" = ").setTextAlignment(DocumentApp.TextAlignment.NORMAL);
+
+                // For the last element append a plain space as suffix; for the rest append a comma
+                if (i !== elements.length - 1) {
+                    suffix = ' '
+                } else {
+                    suffix = ', '
+                }
+                // Insert the value as a content control
+                insertNamedRange(statistic = statistic.value, id = statistic.identifier, suffix = suffix)
+
+            }
+        })
     }
-  })
 }
 
 export { insertStatistics }

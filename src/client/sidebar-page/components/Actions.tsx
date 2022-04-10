@@ -62,10 +62,10 @@ const Actions = () => {
         Was tidystats useful to you? If so, please consider citing it. Thanks!
       </ActionInstructions>
 
-      <ActionButton onClick={() => serverFunctions.insertInTextCitation().catch()}>
+      <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers (2021)').catch()}>
         Insert in-text citation
       </ActionButton>
-      <ActionButton onClick={() => serverFunctions.insertFullCitation().catch()}>
+      <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers, W. W. A. (2021). tidystats: Save output of statistical tests (Version 0.51) [Computer software]. https://doi.org/10.5281/zenodo.4041859').catch()}>
         Insert full citation
       </ActionButton>
       <ActionButton onClick={handleBibTexClick}>

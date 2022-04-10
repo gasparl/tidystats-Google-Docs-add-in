@@ -3,8 +3,7 @@ import {
   openSidebar,
 } from './ui';
 
-import { insertFullCitation } from './functions/insertFullCitation';
-import { insertInTextCitation } from './functions/insertInTextCitation';
+import { insertPlain } from './functions/insertPlain';
 import { formatValue } from './functions/formatValue';
 import { insertStatistic } from './functions/insertStatistic';
 import { insertStatistics } from './functions/insertStatistics';
@@ -15,8 +14,7 @@ import { updateStatistics } from './functions/updateStatistics';
 export {
   onOpen,
   openSidebar,
-  insertFullCitation,
-  insertInTextCitation,
+  insertPlain,
   formatValue,
   updateNamedRange,
   insertStatistic,

@@ -2,45 +2,76 @@ import { Tidystats } from "../../client/sidebar-page/classes/Tidystats"
 
 import { formatValue } from './formatValue';
 
-const updateStatistics = async (tidystats: Tidystats) => {
-  Word.run(async (context) => {
+const updateRange = (rangeName, textToInsert, range, doc) => {
+    var rangeBuilder = doc.newRange();
+    var selection = range;
+    var rangeElement = range.getRangeElements()[0];
+    if (rangeElement.isPartial()) {
+        var tElement = rangeElement.getElement().asText();
+        var startIndex = rangeElement.getStartOffset();
+        var endIndex = rangeElement.getEndOffsetInclusive();
+        var text = tElement.getText().substring(startIndex, endIndex + 1);
+        tElement.insertText(endIndex + 1, 'x');
+        tElement.deleteText(startIndex, endIndex);
+        tElement.insertText(startIndex + 1, textToInsert);
+        if (rangeBuilder === null) {
+            rangeBuilder = doc.newRange();
+            rangeBuilder.addElement(tElement, startIndex + 1, startIndex + 1 + textToInsert.length - 1);
+        }
+    } else {
+        var eElement: any = rangeElement.getElement();
+        // if not specified as "any", throws type errors for some reason
+        if (eElement.editAsText) {
+            eElement.clear().asText().setText(textToInsert);
+            replace = false;
+        } else {
+            var parent = eElement.getParent();
+            parent[parent.insertText ? 'insertText' : 'insertParagraph'](parent.getChildIndex(eElement), textToInsert);
+            eElement.removeFromParent();
+        }
+        rangeBuilder.addElement(eElement);
+    }
+    doc.addNamedRange(rangeName, rangeBuilder.build());
+}
+
+const updateStatistics = (tidystats: Tidystats) => {
     console.log("Updating statistic")
-
+    doc = DocumentApp.getActiveDocument()
     // Find all content control items in the document
-    const contentControls = context.document.contentControls
-    context.load(contentControls, "items")
+    const myNamedRanges = doc.getNamedRanges();
 
-    return context.sync().then(function () {
-      const items = contentControls.items
-
-      // Loop over the content controls items and update the statistics
-      for (const item of items) {
+    // Loop over the content controls items and update the statistics
+    for (const myNamedRange of myNamedRanges) {
         // Find the statistic
-        const statistic = tidystats.findStatistic(item.tag)
+        item_tag = myNamedRange.getName()
+        const statistic = tidystats.findStatistic(item_tag)
 
         // Replace the statistic reported in the document with the new one, if there is one
         if (statistic) {
-          // Check whether a lower or upper bound was reported
-          const components = item.tag.split("$")
+            // Check whether a lower or upper bound was reported
+            const components = item_tag.split("$")
 
-          let bound
-          if (components[components.length - 1].match(/lower|upper/)) {
-            bound = components.pop()
-          }
+            let bound
+            if (components[components.length - 1].match(/lower|upper/)) {
+                bound = components.pop()
+            }
 
-          const value = formatValue(statistic, 2, bound as "lower" | "upper")
+            const value = formatValue(statistic, 2, bound as "lower" | "upper")
 
-          // Insert text
-          item.insertText(value, Word.InsertLocation.replace)
+            // remove named range, update text, reset named range
+            var range = myNamedRange.getRange();
+            myNamedRange.remove();
+            updateRange(item_tag, value, range, doc);
         }
-      }
-    })
-  }).catch(function (error) {
-    console.log("Error: " + error)
-    if (error instanceof OfficeExtension.Error) {
-      console.log("Debug info: " + JSON.stringify(error.debugInfo))
     }
-  })
+
 }
 
 export { updateStatistics }
+
+// perhaps for later:
+// function clearNamedRanges() {
+//   DocumentApp.getActiveDocument().getNamedRanges().forEach(r => {
+//     r.remove();
+//   })
+// }

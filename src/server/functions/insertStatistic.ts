@@ -15,16 +15,21 @@ export const insertStatistic = (statistic: string, id: string) => {
         //DocumentApp.getUi().alert('Please choose a position by placing your cursor in the text.');
     } else {
         // check if not already a named range
-        const namedRangeIndexes = [];
+        const cursorIndex = getIndex(cursor.getElement())
         doc.getNamedRanges().forEach(function(rangeEntry) {
-            [].push.apply(namedRangeIndexes, rangeEntry.getRange().getRangeElements().map(e => getIndex(e.getElement())));
+            rangeEntry.getRange().getRangeElements().forEach(element => {
+                if (cursorIndex == getIndex(element.getElement())) {
+                    if (element.isPartial()) {
+                        let cursorOffset = cursorIndex.getOffset()
+                        if (cursorOffset < element.getStartOffset() || cursorOffset > element.getEndOffsetInclusive()) {
+                            DocumentApp.getUi().alert("Insertion at the cursor's position failed: There is already an interactive field here. (partial text)");
+                        }
+                    } else {
+                        DocumentApp.getUi().alert("Insertion at the cursor's position failed: There is already an interactive field here. (ELEMENT)");
+                    }
+                }
+            });
         })
-        //DocumentApp.getUi().alert(JSON.stringify(namedRangeIndexes));
-        //DocumentApp.getUi().alert(JSON.stringify(getIndex(cursor.getElement())));
-        if (namedRangeIndexes.indexOf(getIndex(cursor.getElement())) !== -1) {
-            DocumentApp.getUi().alert("Insertion at the cursor's position failed: There is already an interactive field here.");
-            return;
-        }
         // if not, proceed to insert
         const tElement = cursor.insertText(statistic + " ");
         if (!tElement) {

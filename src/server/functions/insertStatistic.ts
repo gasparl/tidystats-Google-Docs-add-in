@@ -16,20 +16,32 @@ export const insertStatistic = (statistic: string, id: string) => {
     } else {
         // check if not already a named range
         const cursorIndex = getIndex(cursor.getElement())
-        doc.getNamedRanges().forEach(function(rangeEntry) {
-            rangeEntry.getRange().getRangeElements().forEach(element => {
-                if (cursorIndex == getIndex(element.getElement())) {
+        let abort = false;
+        let rangeIndex = 0;
+        for (const rangeEntry of doc.getNamedRanges()) {
+            for (const element of rangeEntry.getRange().getRangeElements()) {
+                rangeIndex = getIndex(element.getElement());
+                if (cursorIndex === rangeIndex) {
                     if (element.isPartial()) {
-                        let cursorOffset = cursorIndex.getOffset()
-                        if (cursorOffset < element.getStartOffset() || cursorOffset > element.getEndOffsetInclusive()) {
-                            DocumentApp.getUi().alert("Insertion at the cursor's position failed: There is already an interactive field here. (partial text)");
+                        let cursorOffset = cursor.getSurroundingTextOffset()
+                        if (cursorOffset >= element.getStartOffset() && cursorOffset <= element.getEndOffsetInclusive() + 1) {
+                            abort = true;
+                            break;
                         }
                     } else {
-                        DocumentApp.getUi().alert("Insertion at the cursor's position failed: There is already an interactive field here. (ELEMENT)");
+                        abort = true;
+                        break;
                     }
                 }
-            });
-        })
+            }
+            if (abort || rangeIndex > cursorIndex) {
+                break;
+            }
+        }
+        if (abort) {
+            DocumentApp.getUi().alert("Insertion at the cursor's position failed: There is already an interactive field here.");
+            return null;
+        }
         // if not, proceed to insert
         const tElement = cursor.insertText(statistic + " ");
         if (!tElement) {

@@ -23,20 +23,20 @@ const insertNamedRange = (statistic: string, id: string, suffix: string) => {
         var rangeBuilder = doc.newRange();
         rangeBuilder.addElement(tElement, 0, statistic.length);
         doc.addNamedRange(id, rangeBuilder.build());
-        var txtEl = doc.getCursor().getElement();
-        var txtOff = doc.getCursor().getOffset();
-        var pos = doc.newPosition(txtEl, txtOff + 1);
-        doc.setCursor(pos);
+        // var txtEl = doc.getCursor().getElement();
+        // var txtOff = doc.getCursor().getOffset();
+        // var pos = doc.newPosition(txtEl, txtOff + 1);
+        // doc.setCursor(pos);
     }
 }
 
 const appendText = (newText, italic = false) => {
     var txt = doc.getCursor().insertText(newText)
     txt.setItalic(italic);
-    var txtEl = doc.getCursor().getElement();
-    var txtOff = doc.getCursor().getOffset();
-    var pos = doc.newPosition(txtEl, txtOff + 1);
-    doc.setCursor(pos);
+    // var txtEl = doc.getCursor().getElement();
+    // var txtOff = doc.getCursor().getOffset();
+    // var pos = doc.newPosition(txtEl, txtOff + 1);
+    // doc.setCursor(pos);
     return (txt)
 }
 

@@ -14,6 +14,7 @@ export const insertStatistic = (statistic: string, id: string) => {
         } else {
             var rangeBuilder = doc.newRange();
             rangeBuilder.addElement(tElement, 0, statistic.length);
+            DocumentApp.getUi().alert(id); // TODO remove
             doc.addNamedRange(id, rangeBuilder.build());
         }
     }

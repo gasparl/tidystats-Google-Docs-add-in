@@ -22,18 +22,18 @@ const ActionButton = styled(PrimaryButton)`
 `
 
 type ActionsProps = {
-  tidystats: Tidystats
+    tidystats: Tidystats
 }
 
 const Actions = (props: ActionsProps) => {
-  const { tidystats } = props
+    const { tidystats } = props
 
-  const [bibTexButtonLabel, setBibTexButtonLabel] = useState(
-    "Copy BibTex citation"
-  )
+    const [bibTexButtonLabel, setBibTexButtonLabel] = useState(
+        "Copy BibTex citation"
+    )
 
-  const handleBibTexClick = () => {
-    navigator.clipboard.writeText(`
+    const handleBibTexClick = () => {
+        navigator.clipboard.writeText(`
       @software{sleegers2021,
         title = {tidystats: {{Save}} Output of Statistical Tests},
         author = {Sleegers, Willem W. A.},
@@ -42,38 +42,39 @@ const Actions = (props: ActionsProps) => {
         version = {0.51}
       }
     `)
-    setBibTexButtonLabel("Copied!")
-    setTimeout(() => {
-      setBibTexButtonLabel("Copy BibTex citation")
-    }, 2000)
-  }
+        setBibTexButtonLabel("Copied!")
+        setTimeout(() => {
+            setBibTexButtonLabel("Copy BibTex citation")
+        }, 2000)
+    }
 
-
-  return (
-    <>
-      <ActionHeader>Actions:</ActionHeader>
-      <ActionInstructions>
-        Automatically update all statistics in your document after uploading a
-        new statistics file.
+    return (
+        <>
+            <ActionHeader>Actions:</ActionHeader>
+            <ActionInstructions>
+                Automatically update all statistics in your document after uploading a
+                new statistics file.
       </ActionInstructions>
-      <ActionButton onClick={() => serverFunctions.updateStatistics(tidystats).catch()}>
-        Update statistics
+            <ActionButton onClick={() =>
+                // must be send data stringified, because Google only allows JavaScript primitives
+                serverFunctions.updateStatistics(JSON.stringify(tidystats.analyses)).catch(alert)}>
+                Update statistics
       </ActionButton>
-      <ActionInstructions>
-        Was tidystats useful to you? If so, please consider citing it. Thanks!
+            <ActionInstructions>
+                Was tidystats useful to you? If so, please consider citing it. Thanks!
       </ActionInstructions>
 
-      <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers (2021)').catch()}>
-        Insert in-text citation
+            <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers (2021)').catch(alert)}>
+                Insert in-text citation
       </ActionButton>
-      <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers, W. W. A. (2021). tidystats: Save output of statistical tests (Version 0.51) [Computer software]. https://doi.org/10.5281/zenodo.4041859').catch()}>
-        Insert full citation
+            <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers, W. W. A. (2021). tidystats: Save output of statistical tests (Version 0.51) [Computer software]. https://doi.org/10.5281/zenodo.4041859').catch(alert)}>
+                Insert full citation
       </ActionButton>
-      <ActionButton onClick={handleBibTexClick}>
-        {bibTexButtonLabel}
-      </ActionButton>
-    </>
-  )
+            <ActionButton onClick={handleBibTexClick}>
+                {bibTexButtonLabel}
+            </ActionButton>
+        </>
+    )
 }
 
 export { Actions }

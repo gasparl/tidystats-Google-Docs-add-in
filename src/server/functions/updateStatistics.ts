@@ -3,10 +3,10 @@ import { formatValue } from "../../client/sidebar-page/components/formatValue"
 
 const doc = DocumentApp.getActiveDocument()
 
-const updateRange = (rangeName, textToInsert, range) => {
+const updateRange = (rangeName, textToInsert, prevRange) => {
     var rangeBuilder = doc.newRange();
-    var selection = range;
-    var rangeElement = range.getRangeElements()[0];
+    var selection = prevRange;
+    var rangeElement = prevRange.getRangeElements()[0];
     if (rangeElement.isPartial()) {
         var tElement = rangeElement.getElement().asText();
         var startIndex = rangeElement.getStartOffset();
@@ -34,8 +34,57 @@ const updateRange = (rangeName, textToInsert, range) => {
     doc.addNamedRange(rangeName, rangeBuilder.build());
 }
 
-const updateStatistics = (tidystats: Tidystats) => {
-    console.log("Updating statistic")
+const findStatistic = (id: string, analyses) => {
+  // Split the identifier up in the separate components
+  const components = id.split("$")
+
+  // Check if the statistic is a lower or upper bound statistic
+  // If so, remove the last component
+  if (components[components.length - 1].match(/lower|upper/)) {
+    components.pop()
+  }
+
+  // Split up the components into the identifier, the statistics name, and everything else as group names
+  const identifier = components[0]
+  const statisticName = components[components.length - 1]
+  const groupNames = components.slice(1, components.length - 1)
+
+  // Find the analysis based on the identifier
+  const analysis = analyses.find((x) => x.identifier === identifier)
+
+  // Find the statistics
+  let statistic, statistics
+
+  if (groupNames.length) {
+    let groups, group
+
+    groups = analysis?.groups
+
+    for (let i = 0; i < groupNames.length; i++) {
+      group = groups?.find((x) => x.name === groupNames[i])
+
+      if (i < groupNames.length) {
+        group = groups?.find((x) => x.name === groupNames[i])
+        groups = group?.groups
+      }
+    }
+
+    statistics = group?.statistics
+  } else {
+    statistics = analysis?.statistics
+  }
+
+  // Find the statistic
+  statistic = statistics?.find((x) => x.name === statisticName)
+
+  return statistic
+}
+
+const updateStatistics = (tidystatsAnalyses) => {
+    console.log("Updating statistics")
+
+    tidystatsAnalyses = JSON.parse(tidystatsAnalyses)
+
     // Find all content control items in the document
     const myNamedRanges = doc.getNamedRanges();
 
@@ -43,7 +92,8 @@ const updateStatistics = (tidystats: Tidystats) => {
     for (const myNamedRange of myNamedRanges) {
         // Find the statistic
         const item_tag = myNamedRange.getName()
-        const statistic = tidystats.findStatistic(item_tag)
+
+        const statistic = findStatistic(item_tag, tidystatsAnalyses)
 
         // Replace the statistic reported in the document with the new one, if there is one
         if (statistic) {
@@ -58,19 +108,12 @@ const updateStatistics = (tidystats: Tidystats) => {
             const value = formatValue(statistic, 2, bound as "lower" | "upper")
 
             // remove named range, update text, reset named range
-            var range = myNamedRange.getRange();
+            const myRange = myNamedRange.getRange();
             myNamedRange.remove();
-            updateRange(item_tag, value, range);
+            updateRange(item_tag, value, myRange);
         }
     }
 
 }
 
 export { updateStatistics }
-
-// perhaps for later:
-// function clearNamedRanges() {
-//   DocumentApp.getActiveDocument().getNamedRanges().forEach(r => {
-//     r.remove();
-//   })
-// }

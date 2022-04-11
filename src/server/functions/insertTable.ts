@@ -20,15 +20,15 @@ const doc = DocumentApp.getActiveDocument();
  *
  */
 const splitParagraphAt = (pos) => {
-    var el = pos.getElement(), offset = pos.getOffset();
+    let el = pos.getElement(), offset = pos.getOffset();
 
-    var inParagraph = (el.getType() == DocumentApp.ElementType.PARAGRAPH || el.getType() == DocumentApp.ElementType.LIST_ITEM);
+    const inParagraph = (el.getType() == DocumentApp.ElementType.PARAGRAPH || el.getType() == DocumentApp.ElementType.LIST_ITEM);
 
     if (!inParagraph && (el.getType() != DocumentApp.ElementType.TEXT)) {
         throw new Error("Position must be inside text or paragraph.");
     }
 
-    var par;
+    let par;
     if (inParagraph) {
         // in this case, `offset` is the number of child elements before this
         // Position within the same container element
@@ -48,7 +48,7 @@ const splitParagraphAt = (pos) => {
         }
     }
 
-    var parContainer = par.getParent();
+    const parContainer = par.getParent();
 
     if (!("insertParagraph" in parContainer)) {
         throw new Error("Cannot insert another paragraph in this container.");
@@ -57,12 +57,12 @@ const splitParagraphAt = (pos) => {
     // This assumes the given position is in the current document.
     // alternatively, one may traverse through parents of par until document
     // root is reached.
-    //var doc = DocumentApp.getActiveDocument();
+    //const doc = DocumentApp.getActiveDocument();
 
-    var elIndex = par.getChildIndex(el);
-    var newPar = par.copy();
+    const elIndex = par.getChildIndex(el);
+    const newPar = par.copy();
 
-    var newEl = newPar.getChild(elIndex);
+    let newEl = newPar.getChild(elIndex);
 
     // remove everything up to position from the new element
     if (!inParagraph && (offset != 0)) {
@@ -71,13 +71,13 @@ const splitParagraphAt = (pos) => {
     newEl = newEl.getPreviousSibling();
     while (newEl != null) {
         // get the previous sibling before we remove the element.
-        var prevEl = newEl.getPreviousSibling();
+        let prevEl = newEl.getPreviousSibling();
         newEl.removeFromParent();
         newEl = prevEl;
     }
 
     // since we might remove el itself, we get the next sibling here already
-    var nextEl = el.getNextSibling();
+    let nextEl = el.getNextSibling();
 
     // remove everything from position onwards in the original element
     if (!inParagraph && (offset != 0)) {

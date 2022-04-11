@@ -12,30 +12,30 @@ type StatisticProps = {
 const doc = DocumentApp.getActiveDocument();
 
 const insertNamedRange = (statistic: string, id: string, suffix: string) => {
-    var cursor = doc.getCursor();
-    var tElement = cursor.insertText(statistic + suffix);
+    const cursor = doc.getCursor();
+    const tElement = cursor.insertText(statistic + suffix);
     if (!tElement) {
         DocumentApp.getUi().alert('Cannot insert text here.');
     } else {
-        //var text = tElement.getText().substring(startIndex, endIndex + 1);
+        //const text = tElement.getText().substring(startIndex, endIndex + 1);
         // DocumentApp.getUi().alert(text);
         tElement.setItalic(false);
-        var rangeBuilder = doc.newRange();
+        const rangeBuilder = doc.newRange();
         rangeBuilder.addElement(tElement, 0, statistic.length);
         doc.addNamedRange(id, rangeBuilder.build());
-        // var txtEl = doc.getCursor().getElement();
-        // var txtOff = doc.getCursor().getOffset();
-        // var pos = doc.newPosition(txtEl, txtOff + 1);
+        // const txtEl = doc.getCursor().getElement();
+        // const txtOff = doc.getCursor().getOffset();
+        // const pos = doc.newPosition(txtEl, txtOff + 1);
         // doc.setCursor(pos);
     }
 }
 
 const appendText = (newText, italic = false) => {
-    var txt = doc.getCursor().insertText(newText)
+    const txt = doc.getCursor().insertText(newText)
     txt.setItalic(italic);
-    // var txtEl = doc.getCursor().getElement();
-    // var txtOff = doc.getCursor().getOffset();
-    // var pos = doc.newPosition(txtEl, txtOff + 1);
+    // const txtEl = doc.getCursor().getElement();
+    // const txtOff = doc.getCursor().getOffset();
+    // const pos = doc.newPosition(txtEl, txtOff + 1);
     // doc.setCursor(pos);
     return (txt)
 }

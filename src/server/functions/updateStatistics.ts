@@ -4,28 +4,26 @@ import { formatValue } from "../../client/sidebar-page/components/formatValue"
 const doc = DocumentApp.getActiveDocument()
 
 const updateRange = (rangeName, textToInsert, prevRange) => {
-    var rangeBuilder = doc.newRange();
-    var selection = prevRange;
-    var rangeElement = prevRange.getRangeElements()[0];
+    const rangeBuilder = doc.newRange();
+    const selection = prevRange;
+    const rangeElement = prevRange.getRangeElements()[0];
     if (rangeElement.isPartial()) {
-        var tElement = rangeElement.getElement().asText();
-        var startIndex = rangeElement.getStartOffset();
-        var endIndex = rangeElement.getEndOffsetInclusive();
-        var text = tElement.getText().substring(startIndex, endIndex + 1);
+        const tElement = rangeElement.getElement().asText();
+        const startIndex = rangeElement.getStartOffset();
+        const endIndex = rangeElement.getEndOffsetInclusive();
+        // const text = tElement.getText().substring(startIndex, endIndex + 1);
         tElement.insertText(endIndex + 1, 'x');
         tElement.deleteText(startIndex, endIndex);
         tElement.insertText(startIndex + 1, textToInsert);
-        if (rangeBuilder === null) {
-            rangeBuilder = doc.newRange();
-            rangeBuilder.addElement(tElement, startIndex + 1, startIndex + 1 + textToInsert.length - 1);
-        }
+        rangeBuilder.addElement(tElement, startIndex + 1, startIndex + 1 + textToInsert.length - 1);
+        tElement.deleteText(startIndex, startIndex);
     } else {
-        var eElement: any = rangeElement.getElement();
+        const eElement = rangeElement.getElement();
         // if not specified as "any", throws type errors for some reason
         if (eElement.editAsText) {
             eElement.clear().asText().setText(textToInsert);
         } else {
-            var parent = eElement.getParent();
+            const parent = eElement.getParent();
             parent[parent.insertText ? 'insertText' : 'insertParagraph'](parent.getChildIndex(eElement), textToInsert);
             eElement.removeFromParent();
         }
@@ -35,47 +33,47 @@ const updateRange = (rangeName, textToInsert, prevRange) => {
 }
 
 const findStatistic = (id: string, analyses) => {
-  // Split the identifier up in the separate components
-  const components = id.split("$")
+    // Split the identifier up in the separate components
+    const components = id.split("$")
 
-  // Check if the statistic is a lower or upper bound statistic
-  // If so, remove the last component
-  if (components[components.length - 1].match(/lower|upper/)) {
-    components.pop()
-  }
-
-  // Split up the components into the identifier, the statistics name, and everything else as group names
-  const identifier = components[0]
-  const statisticName = components[components.length - 1]
-  const groupNames = components.slice(1, components.length - 1)
-
-  // Find the analysis based on the identifier
-  const analysis = analyses.find((x) => x.identifier === identifier)
-
-  // Find the statistics
-  let statistic, statistics
-
-  if (groupNames.length) {
-    let groups, group
-
-    groups = analysis?.groups
-
-    for (let i = 0; i < groupNames.length; i++) {
-      group = groups?.find((x) => x.name === groupNames[i])
-
-      if (i < groupNames.length) {
-        group = groups?.find((x) => x.name === groupNames[i])
-        groups = group?.groups
-      }
+    // Check if the statistic is a lower or upper bound statistic
+    // If so, remove the last component
+    if (components[components.length - 1].match(/lower|upper/)) {
+        components.pop()
     }
 
-    statistics = group?.statistics
+    // Split up the components into the identifier, the statistics name, and everything else as group names
+    const identifier = components[0]
+    const statisticName = components[components.length - 1]
+    const groupNames = components.slice(1, components.length - 1)
+
+    // Find the analysis based on the identifier
+    const analysis = analyses.find((x) => x.identifier === identifier)
+
+    // Find the statistics
+    let statistic, statistics
+
+    if (groupNames.length) {
+        let groups, group
+
+        groups = analysis ?.groups
+
+    for (let i = 0; i < groupNames.length; i++) {
+            group = groups ?.find((x) => x.name === groupNames[i])
+
+      if (i < groupNames.length) {
+                group = groups ?.find((x) => x.name === groupNames[i])
+        groups = group ?.groups
+      }
+        }
+
+        statistics = group ?.statistics
   } else {
-    statistics = analysis?.statistics
+        statistics = analysis ?.statistics
   }
 
-  // Find the statistic
-  statistic = statistics?.find((x) => x.name === statisticName)
+    // Find the statistic
+    statistic = statistics ?.find((x) => x.name === statisticName)
 
   return statistic
 }

@@ -13,7 +13,7 @@ export const insertStatistic = (statistic: string, id: string) => {
             DocumentApp.getUi().alert('Cannot insert text here.');
         } else {
             const rangeBuilder = doc.newRange();
-            rangeBuilder.addElement(tElement, 0, statistic.length);
+            rangeBuilder.addElement(tElement, 0, statistic.length - 1);
             doc.addNamedRange(id, rangeBuilder.build());
         }
     }

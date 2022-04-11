@@ -48,9 +48,6 @@ export const insertStatistic = (statistic: string, id: string) => {
         } else {
             insertURL(tElement, id, 0, statistic.length - 1)
             doc.setCursor(doc.newPosition(tElement, statistic.length + 1));
-            const rangeBuilder = doc.newRange();
-            rangeBuilder.addElement(tElement, 0, statistic.length - 1);
-            doc.addNamedRange(id, rangeBuilder.build());
         }
     }
 }

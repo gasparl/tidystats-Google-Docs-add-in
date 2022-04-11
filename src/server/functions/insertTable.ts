@@ -116,9 +116,6 @@ const insertValue = (table, rownum: number, colnum: number, value, tag = null) =
     const cElement : any = cursor.insertText(value);
     if (tag !== null) {
         insertURL(cElement, tag)
-        const rangeBuilder = doc.newRange();
-        rangeBuilder.addElement(cElement);
-        doc.addNamedRange(tag, rangeBuilder.build());
     }
     return (cElement)
 }

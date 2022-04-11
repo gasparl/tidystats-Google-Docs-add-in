@@ -21,9 +21,6 @@ const insertNamedRange = (statistic: string, id: string, suffix: string) => {
         //const text = tElement.getText().substring(startIndex, endIndex + 1);
         // DocumentApp.getUi().alert(text);
         tElement.setItalic(false);
-        const rangeBuilder = doc.newRange();
-        rangeBuilder.addElement(tElement, 0, statistic.length - 1);
-        doc.addNamedRange(id, rangeBuilder.build());
         insertURL(tElement, id, 0, statistic.length - 1)
         doc.setCursor(doc.newPosition(tElement, statistic.length + suffix.length));
     }

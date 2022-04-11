@@ -1,35 +1,42 @@
 import { Tidystats } from "../../client/sidebar-page/classes/Tidystats"
 import { formatValue } from "../../client/sidebar-page/components/formatValue"
+import { insertURL } from './insertURL';
 
 const doc = DocumentApp.getActiveDocument()
 
 const updateRange = (rangeName, textToInsert, prevRange) => {
     const rangeBuilder = doc.newRange();
     const selection = prevRange;
-    const rangeElement = prevRange.getRangeElements()[0];
-    if (rangeElement.isPartial()) {
-        const tElement = rangeElement.getElement().asText();
-        const startIndex = rangeElement.getStartOffset();
-        const endIndex = rangeElement.getEndOffsetInclusive();
-        // const text = tElement.getText().substring(startIndex, endIndex + 1);
-        tElement.insertText(endIndex + 1, 'x');
-        tElement.deleteText(startIndex, endIndex);
-        tElement.insertText(startIndex + 1, textToInsert);
-        rangeBuilder.addElement(tElement, startIndex + 1, startIndex + 1 + textToInsert.length - 1);
-        tElement.deleteText(startIndex, startIndex);
-    } else {
-        const eElement = rangeElement.getElement();
-        // if not specified as "any", throws type errors for some reason
-        if (eElement.editAsText) {
-            eElement.clear().asText().setText(textToInsert);
+    for (const rangeElement of prevRange.getRangeElements()) {
+        if (rangeElement.isPartial()) {
+            const tElement = rangeElement.getElement().asText();
+            const startIndex = rangeElement.getStartOffset();
+            const endIndex = rangeElement.getEndOffsetInclusive();
+            // const text = tElement.getText().substring(startIndex, endIndex + 1);
+            tElement.insertText(endIndex + 1, 'x');
+            tElement.deleteText(startIndex, endIndex);
+            tElement.insertText(startIndex + 1, textToInsert);
+            rangeBuilder.addElement(tElement, startIndex + 1, startIndex + 1 + textToInsert.length - 1);
+
+            insertURL(tElement, rangeName, startIndex + 1, startIndex + 1 + textToInsert.length - 1)
+
+            tElement.deleteText(startIndex, startIndex);
         } else {
-            const parent = eElement.getParent();
-            parent[parent.insertText ? 'insertText' : 'insertParagraph'](parent.getChildIndex(eElement), textToInsert);
-            eElement.removeFromParent();
+            const eElement = rangeElement.getElement();
+            // if not specified as "any", throws type errors for some reason
+            if (eElement.editAsText) {
+                eElement.clear().asText().setText(textToInsert);
+            } else {
+                const parent = eElement.getParent();
+                parent[parent.insertText ? 'insertText' : 'insertParagraph'](parent.getChildIndex(eElement), textToInsert);
+                eElement.removeFromParent();
+            }
+            rangeBuilder.addElement(eElement);
+
+            insertURL(eElement, rangeName)
         }
-        rangeBuilder.addElement(eElement);
+        doc.addNamedRange(rangeName, rangeBuilder.build());
     }
-    doc.addNamedRange(rangeName, rangeBuilder.build());
 }
 
 const findStatistic = (id: string, analyses) => {

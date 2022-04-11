@@ -1,5 +1,6 @@
 import { Group } from "../../client/sidebar-page/classes/Group"
 import { formatValue } from "../../client/sidebar-page/components/formatValue"
+import { insertURL } from './insertURL';
 
 const doc = DocumentApp.getActiveDocument();
 
@@ -114,6 +115,7 @@ const insertValue = (table, rownum: number, colnum: number, value, tag = null) =
     const cursor = doc.getCursor();
     const cElement : any = cursor.insertText(value);
     if (tag !== null) {
+        insertURL(cElement, tag)
         const rangeBuilder = doc.newRange();
         rangeBuilder.addElement(cElement);
         doc.addNamedRange(tag, rangeBuilder.build());

@@ -1,4 +1,5 @@
 import { insertPlain } from './insertPlain';
+import { insertURL } from './insertURL';
 
 type StatisticProps = {
     name: string
@@ -10,10 +11,10 @@ type StatisticProps = {
 }
 
 const doc = DocumentApp.getActiveDocument();
+const cursor = doc.getCursor();
 
 const insertNamedRange = (statistic: string, id: string, suffix: string) => {
-    const cursor = doc.getCursor();
-    const tElement = cursor.insertText(statistic + suffix);
+    const tElement: any = cursor.insertText(statistic + suffix);
     if (!tElement) {
         DocumentApp.getUi().alert('Cannot insert text here.');
     } else {
@@ -21,31 +22,23 @@ const insertNamedRange = (statistic: string, id: string, suffix: string) => {
         // DocumentApp.getUi().alert(text);
         tElement.setItalic(false);
         const rangeBuilder = doc.newRange();
-        rangeBuilder.addElement(tElement, 0, statistic.length);
+        rangeBuilder.addElement(tElement, 0, statistic.length - 1);
         doc.addNamedRange(id, rangeBuilder.build());
-        // const txtEl = doc.getCursor().getElement();
-        // const txtOff = doc.getCursor().getOffset();
-        // const pos = doc.newPosition(txtEl, txtOff + 1);
-        // doc.setCursor(pos);
+        insertURL(tElement, id, 0, statistic.length - 1)
+        doc.setCursor(doc.newPosition(tElement, statistic.length + suffix.length));
     }
 }
 
 const appendText = (newText, italic = false) => {
-    const txt = doc.getCursor().insertText(newText)
+    const txt: any = cursor.insertText(newText)
+    doc.setCursor(doc.newPosition(txt, newText.length));
     txt.setItalic(italic);
-    // const txtEl = doc.getCursor().getElement();
-    // const txtOff = doc.getCursor().getOffset();
-    // const pos = doc.newPosition(txtEl, txtOff + 1);
-    // doc.setCursor(pos);
     return (txt)
 }
 
 const insertStatistics = (statistics: StatisticProps[]) => {
-    const cursor = doc.getCursor();
     if (!cursor) {
-        insertPlain('');
-        insertStatistics(statistics);
-        //DocumentApp.getUi().alert('Please choose a position by placing your cursor in the text.');
+        DocumentApp.getUi().alert('Please choose a position by placing your cursor in the text.');
     } else {
 
         // Filter out the unchecked statistics
@@ -78,6 +71,14 @@ const insertStatistics = (statistics: StatisticProps[]) => {
         // Loop over the remaining elements and insert them
         elements.forEach((statistic: StatisticProps, i: number) => {
 
+            // For the last element append a plain space as suffix; for the rest append a comma
+            let suffix
+            if (i === elements.length - 1) {
+                suffix = ' '
+            } else {
+                suffix = ', '
+            }
+
             // Add the degrees of freedom in parentheses if there's a test statistic
             const lower = statistics.find((x: StatisticProps) => x.name === "lower")
             const upper = statistics.find((x: StatisticProps) => x.name === "upper")
@@ -86,7 +87,7 @@ const insertStatistics = (statistics: StatisticProps[]) => {
                 appendText(statistic.symbol)
                 appendText(" [")
                 insertNamedRange(lower.value, lower.identifier, ',')
-                insertNamedRange(upper.value, upper.identifier, ']')
+                insertNamedRange(upper.value, upper.identifier, ']' + suffix)
             } else {
                 if (statistic.name === "statistic") {
                     if (
@@ -124,20 +125,13 @@ const insertStatistics = (statistics: StatisticProps[]) => {
                 } else {
                     appendText(statistic.symbol, true)
                     if (statistic.subscript) {
-                        appendText(statistic.subscript).setTextAlignment(DocumentApp.TextAlignment.SUPERSCRIPT);
+                        appendText(statistic.subscript).setTextAlignment(DocumentApp.TextAlignment.SUBSCRIPT);
                     }
                 }
 
                 // Insert an equal sign and set the style back to normal
                 appendText(" = ").setTextAlignment(DocumentApp.TextAlignment.NORMAL);
 
-                // For the last element append a plain space as suffix; for the rest append a comma
-                let suffix
-                if (i !== elements.length - 1) {
-                    suffix = ' '
-                } else {
-                    suffix = ', '
-                }
                 // Insert the value as a content control
                 insertNamedRange(statistic.value, statistic.identifier, suffix)
 

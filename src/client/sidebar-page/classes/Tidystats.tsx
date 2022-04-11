@@ -1,7 +1,7 @@
 import { Analysis } from "./Analysis"
 
 class Tidystats {
-  analyses: Analysis[]
+  analyses: any[] // Analysis[]
 
   constructor(data: { [key: string]: any }) {
     let analyses = []

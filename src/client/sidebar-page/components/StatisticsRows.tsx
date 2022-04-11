@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import styled from "styled-components"
 
 import { Statistic, RangedStatistic } from "../classes/Statistic"
+import { formatValue } from "./formatValue"
 import { Row } from "./Row"
 import { RowName } from "./RowName"
 import { RowValue } from "./RowValue"
@@ -52,7 +53,7 @@ const StatisticsRows = (props: StatisticsRowsProps) => {
           name: y.name,
           symbol: y.symbol !== undefined ? y.symbol : y.name,
           subscript: y.subscript,
-          value: serverFunctions.formatValue(y, 2).catch(alert),
+          value: formatValue(y, 2),
           checked: true,
         }
         const item_lower = {
@@ -60,7 +61,7 @@ const StatisticsRows = (props: StatisticsRowsProps) => {
           name: "lower",
           symbol: y.level * 100 + "% " + y.interval,
           subscript: "lower",
-          value: serverFunctions.formatValue(y, 2, "lower").catch(alert),
+          value: formatValue(y, 2, "lower"),
           checked: true,
         }
         const item_upper = {
@@ -68,7 +69,7 @@ const StatisticsRows = (props: StatisticsRowsProps) => {
           name: "upper",
           symbol: y.level * 100 + "% " + y.interval,
           subscript: "upper",
-          value: serverFunctions.formatValue(y, 2, "upper").catch(alert),
+          value: formatValue(y, 2, "upper"),
           checked: true,
         }
         initialItems.push(item)
@@ -80,7 +81,7 @@ const StatisticsRows = (props: StatisticsRowsProps) => {
           name: x.name,
           symbol: x.symbol !== undefined ? x.symbol : x.name,
           subscript: x.subscript,
-          value: serverFunctions.formatValue(x, 2).catch(alert),
+          value: formatValue(x, 2),
           checked: true,
         }
         initialItems.push(item)

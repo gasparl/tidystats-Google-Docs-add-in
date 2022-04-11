@@ -25,7 +25,8 @@ type ActionsProps = {
   tidystats: Tidystats
 }
 
-const Actions = () => {
+const Actions = (props: ActionsProps) => {
+  const { tidystats } = props
 
   const [bibTexButtonLabel, setBibTexButtonLabel] = useState(
     "Copy BibTex citation"

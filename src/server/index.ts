@@ -4,7 +4,6 @@ import {
 } from './ui';
 
 import { insertPlain } from './functions/insertPlain';
-import { formatValue } from './functions/formatValue';
 import { insertStatistic } from './functions/insertStatistic';
 import { insertStatistics } from './functions/insertStatistics';
 import { insertTable } from './functions/insertTable';
@@ -15,8 +14,6 @@ export {
   onOpen,
   openSidebar,
   insertPlain,
-  formatValue,
-  updateNamedRange,
   insertStatistic,
   insertStatistics,
   insertTable,

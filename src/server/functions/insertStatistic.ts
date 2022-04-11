@@ -5,25 +5,15 @@ export const insertStatistic = (statistic: string, id: string) => {
     var cursor = doc.getCursor();
     if (!cursor) {
         insertPlain('');
-        insertStatistic(statistic, id, suffix);
+        insertStatistic(statistic, id);
         //DocumentApp.getUi().alert('Please choose a position by placing your cursor in the text.');
     } else {
-        var cElement = cursor.insertText(statistic);
-        if (!cElement) {
+        var tElement = cursor.insertText(statistic + " ");
+        if (!tElement) {
             DocumentApp.getUi().alert('Cannot insert text here.');
         } else {
-
-            var tElement = cElement.asText();
-            var startIndex = tElement.getStartOffset();
-            var endIndex = tElement.getEndOffsetInclusive();
-            var text = tElement.getText().substring(startIndex, endIndex + 1);
-            DocumentApp.getUi().alert(text);
-
-            tElement.insertText(endIndex + 1, " ");
-
             var rangeBuilder = doc.newRange();
-            rangeBuilder.addElement(tElement, startIndex, endIndex + 1);
-
+            rangeBuilder.addElement(tElement, 0, statistic.length);
             doc.addNamedRange(id, rangeBuilder.build());
         }
     }

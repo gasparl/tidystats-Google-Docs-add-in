@@ -1,8 +1,9 @@
 import { Tidystats } from "../../client/sidebar-page/classes/Tidystats"
+import { formatValue } from "../../client/sidebar-page/components/formatValue"
 
-import { formatValue } from './formatValue';
+const doc = DocumentApp.getActiveDocument()
 
-const updateRange = (rangeName, textToInsert, range, doc) => {
+const updateRange = (rangeName, textToInsert, range) => {
     var rangeBuilder = doc.newRange();
     var selection = range;
     var rangeElement = range.getRangeElements()[0];
@@ -23,7 +24,6 @@ const updateRange = (rangeName, textToInsert, range, doc) => {
         // if not specified as "any", throws type errors for some reason
         if (eElement.editAsText) {
             eElement.clear().asText().setText(textToInsert);
-            replace = false;
         } else {
             var parent = eElement.getParent();
             parent[parent.insertText ? 'insertText' : 'insertParagraph'](parent.getChildIndex(eElement), textToInsert);
@@ -36,14 +36,13 @@ const updateRange = (rangeName, textToInsert, range, doc) => {
 
 const updateStatistics = (tidystats: Tidystats) => {
     console.log("Updating statistic")
-    doc = DocumentApp.getActiveDocument()
     // Find all content control items in the document
     const myNamedRanges = doc.getNamedRanges();
 
     // Loop over the content controls items and update the statistics
     for (const myNamedRange of myNamedRanges) {
         // Find the statistic
-        item_tag = myNamedRange.getName()
+        const item_tag = myNamedRange.getName()
         const statistic = tidystats.findStatistic(item_tag)
 
         // Replace the statistic reported in the document with the new one, if there is one
@@ -61,7 +60,7 @@ const updateStatistics = (tidystats: Tidystats) => {
             // remove named range, update text, reset named range
             var range = myNamedRange.getRange();
             myNamedRange.remove();
-            updateRange(item_tag, value, range, doc);
+            updateRange(item_tag, value, range);
         }
     }
 

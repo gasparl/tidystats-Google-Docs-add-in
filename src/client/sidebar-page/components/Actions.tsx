@@ -54,22 +54,26 @@ const Actions = (props: ActionsProps) => {
             <ActionInstructions>
                 Automatically update all statistics in your document after uploading a
                 new statistics file.
-      </ActionInstructions>
+            </ActionInstructions>
+
             <ActionButton onClick={() =>
                 // must be send data stringified, because Google only allows JavaScript primitives
                 serverFunctions.updateStatistics(JSON.stringify(tidystats.analyses)).catch(alert)}>
                 Update statistics
-      </ActionButton>
+            </ActionButton>
+
             <ActionInstructions>
                 Was tidystats useful to you? If so, please consider citing it. Thanks!
-      </ActionInstructions>
+            </ActionInstructions>
 
             <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers (2021)').catch(alert)}>
                 Insert in-text citation
-      </ActionButton>
+            </ActionButton>
+
             <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers, W. W. A. (2021). tidystats: Save output of statistical tests (Version 0.51) [Computer software]. https://doi.org/10.5281/zenodo.4041859').catch(alert)}>
                 Insert full citation
-      </ActionButton>
+            </ActionButton>
+
             <ActionButton onClick={handleBibTexClick}>
                 {bibTexButtonLabel}
             </ActionButton>

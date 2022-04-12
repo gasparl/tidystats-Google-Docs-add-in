@@ -5,7 +5,7 @@ import { insertURL } from './insertURL';
 const doc = DocumentApp.getActiveDocument();
 
 /**
- * From: https://stackoverflow.com/a/40675038/9593181
+ * "splitParagraphAt()" from: https://stackoverflow.com/a/40675038/9593181
  *
  * Splits the contents of the paragraph (or list item) at the given position,
  * producing two adjacent paragraphs (or list items). This function may be used

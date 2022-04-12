@@ -30,7 +30,7 @@ const Actions = (props: ActionsProps) => {
     const { tidystats } = props
 
     const [updateButtonLabel, setUpdateButtonLabel] = useState(
-        "Update statistics 1"
+        "Update statistics"
     )
 
     const [updateButtonDisable, setUpdateButtonDisable] = useState(
@@ -48,15 +48,9 @@ const Actions = (props: ActionsProps) => {
     }
 
     const updateFinished = () => {
-        // the small delay is added because sometimes (at least on chrome) the update
-        // appears in the document a bit later then the server promise resolution
-        // (hence the button would be seen enabled even before all updates are visible)
-        lock.releaseLock();
-        setTimeout(() => {
-            setUpdateButtonSpinner(<></>);
-            setUpdateButtonLabel("Update statistics");
-            setUpdateButtonDisable(false);
-        }, 500)
+        setUpdateButtonSpinner(<></>);
+        setUpdateButtonLabel("Update statistics");
+        setUpdateButtonDisable(false);
     }
 
     const [bibTexButtonLabel, setBibTexButtonLabel] = useState(

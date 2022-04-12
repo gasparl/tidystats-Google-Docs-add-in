@@ -3,10 +3,16 @@ import { formatValue } from "../../client/sidebar-page/components/formatValue"
 import { insertURL } from './insertURL';
 
 const doc = DocumentApp.getActiveDocument()
- 
+const lock = LockService.getDocumentLock();
+
 const updateStatistics = (tidystatsAnalyses) => {
-    console.log("Updating statistics")
-    //DocumentApp.getUi().alert('Updating statistics.');
+    lock.tryLock(0);
+    if (!lock.hasLock()) {
+        DocumentApp.getUi().alert('The server seems busy at the moment. Perhaps other users are updating the statistics. Please try again later.');
+        return;
+    }
+    // console.log("Updating statistics")
+    // DocumentApp.getUi().alert('Updating statistics.');
     tidystatsAnalyses = JSON.parse(tidystatsAnalyses)
     const allLinks = getAllLinks();
     const allIDs = [];
@@ -58,8 +64,12 @@ const updateStatistics = (tidystatsAnalyses) => {
             }
         }
     }
+    Utilities.sleep(1000)
+    // the small delay is added because sometimes (at least on chrome) the update
+    // appears in the document a bit later then the server promise resolution
+    // (hence the button would be seen enabled even before all updates are visible)
+    // furthermore, the delay helps locking the document for sufficient time
 }
-
 
 /** Below, the getAllLinks function and the related iterateSection function were
  * first modified for Zotero from https://stackoverflow.com/a/40730088/3199106.

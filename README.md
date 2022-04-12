@@ -1,6 +1,6 @@
-## Google Docs [tidystats](https://www.tidystats.io/) add-in.
+## tidystats Google Docs add-in.
 
-For information about _tidystats_, please visit the [tidystats](https://www.tidystats.io/) website.
+This software an add-in for Google Docs to insert statistics from a file created with the [tidystats](https://github.com/WillemSleegers/tidystats) R package. For more information about _tidystats_, please visit the [tidystats website](https://www.tidystats.io/).
 
 This Google Docs add-in is written in [Google Apps Script](https://developers.google.com/apps-script/overview) (Google's Javascript-based development platform for building applications and add-ons for Google Sheets, Docs, Forms and other Google Apps), built on the boilerplate project available via [https://github.com/enuchi/React-Google-Apps-Script](https://github.com/enuchi/React-Google-Apps-Script), which can be consulted for details about the code structure.
 

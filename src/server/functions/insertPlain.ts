@@ -34,13 +34,11 @@ export const insertPlain = (textToInsert) => {
                     if (replace && element.editAsText) {
                         element.clear().asText().setText(textToInsert);
                         replace = false;
-                        doc.setCursor(doc.newPosition(element, textToInsert.length));
                     } else {
                         if (replace && i === elements.length - 1) {
                             const parent = element.getParent();
                             parent[parent.insertText ? 'insertText' : 'insertParagraph'](parent.getChildIndex(element), textToInsert);
                             replace = false; //not really necessary since it's the last one
-                            doc.setCursor(doc.newPosition(element, textToInsert.length));
                         }
                         element.removeFromParent();
                     }

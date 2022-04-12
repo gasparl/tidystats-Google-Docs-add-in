@@ -7,7 +7,6 @@ const updateStatistics = (tidystatsAnalyses) => {
     console.log("Updating statistics")
     //DocumentApp.getUi().alert('Updating statistics.');
     tidystatsAnalyses = JSON.parse(tidystatsAnalyses)
-
     const allLinks = getAllLinks();
     const allIDs = [];
     for (const link of allLinks) {
@@ -87,25 +86,25 @@ const updateStatistics = (tidystatsAnalyses) => {
  	***** END LICENSE BLOCK *****
  */
 
- /**
- * Returns a flat array of links which appear in the active document's body.
- * Each link is represented by a simple Javascript object with the following
- * keys:
- *	 - "section": {ContainerElement} the document section in which the link is
- *		 found.
- *	 - "isFirstPageSection": {Boolean} whether the given section is a first-page
- *		 header/footer section.
- *	 - "paragraph": {ContainerElement} contains a reference to the Paragraph
- *		 or ListItem element in which the link is found.
- *	 - "text": the Text element in which the link is found.
- *	 - "startOffset": {Number} the position (offset) in the link text begins.
- *	 - "endOffsetInclusive": the position of the last character of the link
- *			text, or null if the link extends to the end of the text element.
- *	 - "url": the URL of the link.
- *
- *
- * @returns {Array} the aforementioned flat array of links.
- */
+/**
+* Returns a flat array of links which appear in the active document's body.
+* Each link is represented by a simple Javascript object with the following
+* keys:
+*	 - "section": {ContainerElement} the document section in which the link is
+*		 found.
+*	 - "isFirstPageSection": {Boolean} whether the given section is a first-page
+*		 header/footer section.
+*	 - "paragraph": {ContainerElement} contains a reference to the Paragraph
+*		 or ListItem element in which the link is found.
+*	 - "text": the Text element in which the link is found.
+*	 - "startOffset": {Number} the position (offset) in the link text begins.
+*	 - "endOffsetInclusive": the position of the last character of the link
+*			text, or null if the link extends to the end of the text element.
+*	 - "url": the URL of the link.
+*
+*
+* @returns {Array} the aforementioned flat array of links.
+*/
 
 const getAllLinks = () => {
     const links = [];
@@ -174,7 +173,6 @@ const getAllLinks = () => {
     return links;
 }
 
-
 /**
  * Calls the given function for each section of the document (body, header,
  * etc.). Sections are children of the DocumentElement object.
@@ -220,47 +218,38 @@ const iterateSections = (doc, func) => {
 const findStatistic = (id: string, analyses) => {
     // Split the identifier up in the separate components
     const components = id.split("$")
-
     // Check if the statistic is a lower or upper bound statistic
     // If so, remove the last component
     if (components[components.length - 1].match(/lower|upper/)) {
         components.pop()
     }
-
     // Split up the components into the identifier, the statistics name, and everything else as group names
     const identifier = components[0]
     const statisticName = components[components.length - 1]
     const groupNames = components.slice(1, components.length - 1)
-
     // Find the analysis based on the identifier
     const analysis = analyses.find((x) => x.identifier === identifier)
-
     // Find the statistics
     let statistic, statistics
-
     if (groupNames.length) {
         let groups, group
-
         groups = analysis ?.groups
-
     for (let i = 0; i < groupNames.length; i++) {
-            group = groups ?.find((x) => x.name === groupNames[i])
-
-      if (i < groupNames.length) {
-                group = groups ?.find((x) => x.name === groupNames[i])
-        groups = group ?.groups
-      }
+            group = groups ?.find((x) => x.name === groupNames[i]);
+            if (i < groupNames.length) {
+                group = groups ?.find((x) => x.name === groupNames[i]);
+                groups = group ?.groups;
+            }
         }
-
-        statistics = group ?.statistics
-  } else {
-        statistics = analysis ?.statistics
-  }
+        statistics = group ?.statistics;
+    } else {
+        statistics = analysis ?.statistics;
+    }
 
     // Find the statistic
-    statistic = statistics ?.find((x) => x.name === statisticName)
+    statistic = statistics ?.find((x) => x.name === statisticName);
 
-  return statistic
+    return statistic;
 }
 
 

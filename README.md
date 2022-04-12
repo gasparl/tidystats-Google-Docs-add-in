@@ -1,4 +1,4 @@
-## tidystats Google Docs add-in.
+# tidystats Google Docs add-in.
 
 This software an add-in for Google Docs to insert statistics from a file created with the [tidystats](https://github.com/WillemSleegers/tidystats) R package. For more information about _tidystats_, please visit the [tidystats website](https://www.tidystats.io/).
 
@@ -34,11 +34,11 @@ npm run login
 }
 ```
 
-- `scriptId`: Your existing script project's `scriptId`. You can find it by opening your spreadsheet, selecting **Tools > Script Editor** from the menubar, then **File > Project properties**, and it will be listed as "Script ID".
+- `scriptId`: Your existing script project's `scriptId`. You can find it by opening your document, selecting **Tools -> Script editor** from the menubar, then **File -> Project properties**, and it will be listed as "Script ID".
 
-- `parentId`: An array with a single string, the ID of the parent file (spreadsheet, doc, etc.) that the script project is bound to. You can get this ID from the url, where the format is usually `https://docs.google.com/spreadsheets/d/{id}/edit`. This allows you to run `npm run open` and open your file directly from the command line.
+- `parentId`: An array with a single string, the ID of the parent file (Google Document) that the script project is bound to. You can get this ID from the url, where the format is usually `https://docs.google.com/document/d/{id}/edit`. This allows you to run `npm run open` and open your file directly from the command line.
 
-- `rootDir`: This should always be `"./dist"`, i.e. the local build folder that is used to store project files.
+- `rootDir`: This should always remain `"./dist"`, the local build folder that is used to store project files.
 
 
 Now you can run the deploy command to compile and upload the scripts to the specified Google Document. (You may be prompted for confirmation to update your manifest file; select "yes".)
@@ -49,7 +49,7 @@ npm run deploy
 
 The deploy command will build all necessary files using production settings, including all server code (Google Apps Script code), client code (React bundle), and config files. All bundled files will be saved to the `dist/` folder, and then pushed to the Google Apps Script project.
 
-Now you can open or refresh the Google Document and you should see the new menu "_tidystats_". (You can also run `npm run open` to open the document.) You can also see the uploaded Google Apps Scripts via **Tools**/**Script editor**.
+Now you can open or refresh the Google Document and you should see the new menu "_tidystats_". (You can also run `npm run open` to open the document.) You can also see the uploaded Google Apps Scripts via **Tools -> Script editor**.
 
 
 ### Support

@@ -3,6 +3,69 @@ import { formatValue } from "../../client/sidebar-page/components/formatValue"
 import { insertURL } from './insertURL';
 
 const doc = DocumentApp.getActiveDocument()
+const updateStatistics = (tidystatsAnalyses) => {
+    console.log("Updating statistics")
+    tidystatsAnalyses = JSON.parse(tidystatsAnalyses)
+
+    const allLinks = getAllLinks();
+    const allIDs = [];
+    for (const link of allLinks) {
+        const rangeBuilder = doc.newRange();
+        rangeBuilder.addElement(link.text, link.startOffset, link.endOffsetInclusive);
+        doc.addNamedRange(link.id, rangeBuilder.build());
+        if (allIDs.indexOf(link.id) === -1) {
+            allIDs.push(link.id);
+        }
+    }
+    //DocumentApp.getUi().alert('updating2.');
+    for (const id of allIDs) {
+        const statistic = findStatistic(id, tidystatsAnalyses);
+        // Replace the statistic reported in the document with the new one, if there is one
+        if (statistic) {
+            // Check whether a lower or upper bound was reported
+            const components = id.split("$")
+            let bound
+            if (components[components.length - 1].match(/lower|upper/)) {
+                bound = components.pop()
+            }
+            const value = formatValue(statistic, 2, bound as "lower" | "upper")
+
+            // Loop over the content controls items and update the statistics
+            for (const myNamedRange of doc.getNamedRanges(id)) {
+                // remove named range, update text, reset URL
+                const myRange = myNamedRange.getRange();
+                myNamedRange.remove();
+                // update range elements
+                for (const rangeElement of myRange.getRangeElements()) {
+                    if (rangeElement.isPartial()) {
+                        const tElement = rangeElement.getElement().asText();
+                        const startIndex = rangeElement.getStartOffset();
+                        const endIndex = rangeElement.getEndOffsetInclusive();
+                        // const text = tElement.getText().substring(startIndex, endIndex + 1);
+                        // tElement.insertText(endIndex + 1, 'x');
+                        // tElement.deleteText(startIndex, endIndex);
+                        // tElement.insertText(startIndex + 1, value);
+                        // //insertURL(tElement, id, startIndex + 1, startIndex + 1 + value.length - 1)
+                        // tElement.deleteText(startIndex, startIndex);
+                        tElement.insertText(endIndex + 1, value);
+                        tElement.deleteText(startIndex, endIndex);
+                    } else {
+                        const eElement: any = rangeElement.getElement();
+                        // if not specified as "any", throws type errors for some reason
+                        if (eElement.editAsText) {
+                            eElement.clear().asText().setText(value);
+                        } else {
+                            const parent = eElement.getParent();
+                            parent[parent.insertText ? 'insertText' : 'insertParagraph'](parent.getChildIndex(eElement), value);
+                            eElement.removeFromParent();
+                        }
+                        //insertURL(eElement, id)
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 /** (First modified from https://stackoverflow.com/a/40730088/3199106)
@@ -25,8 +88,9 @@ const doc = DocumentApp.getActiveDocument()
  *
  * @returns {Array} the aforementioned flat array of links.
  */
-const updateStatistics = (tidystatsAnalyses) => {
-    tidystatsAnalyses = JSON.parse(tidystatsAnalyses)
+
+const getAllLinks = () => {
+    const links = [];
     let footnoteIndex = 0;
     iterateSections(doc, function iterateSection(section, sectionIndex, isFirstPageSection, footnote) {
         if (typeof section.getParagraphs != 'function') {
@@ -59,49 +123,39 @@ const updateStatistics = (tidystatsAnalyses) => {
                 // go over all styling segments in text element
                 const attributeIndices = el.getTextAttributeIndices();
                 let lastLink = null;
-                let lastEndOffset = null;
                 attributeIndices.forEach(function(startOffset, i, attributeIndices) {
                     const url = el.getLinkUrl(startOffset);
-                    if (url !== null && url ?.indexOf('https://www.tidystats.io/?id=') === 0) {
+                    if (url != null && url ?.indexOf('https://www.tidystats.io/?id=') === 0) {
                         // we hit a link
-
-                        let item_tag = url.substring(29);
-                        const statistic = findStatistic(item_tag, tidystatsAnalyses)
-
-                        // Replace the statistic reported in the document with the new one, if there is one
-                        if (statistic) {
-                            // Check whether a lower or upper bound was reported
-                            const components = item_tag.split("$")
-
-                            let bound
-                            if (components[components.length - 1].match(/lower|upper/)) {
-                                bound = components.pop()
-                            }
-
-                            const newValue = formatValue(statistic, 2, bound as "lower" | "upper")
-
-                            const endOffsetInclusive = (i + 1 < attributeIndices.length ?
-                                attributeIndices[i + 1] - 1 : el.getText().length - 1);
-                            // check if this and the last found link are continuous
-                            if (lastLink == url &&
-                                (startOffset - 1 <= lastEndOffset)) {
-                                // this and the previous style segment are continuous
-                                lastEndOffset = endOffsetInclusive;
-                            } else {
-                                el.insertText(endOffsetInclusive + 1, newValue);
-                                lastLink = url;
-                                lastEndOffset = startOffset + newValue.length;
-                                el.deleteText(startOffset, endOffsetInclusive + 0);
-
-                                //DocumentApp.getUi().alert(JSON.stringify(lastEndOffset));
-                            }
+                        const endOffsetInclusive = (i + 1 < attributeIndices.length ?
+                            attributeIndices[i + 1] - 1 : el.getText().length - 1);
+                        // check if this and the last found link are continuous
+                        if (lastLink != null && lastLink.url == url &&
+                            lastLink.endOffsetInclusive == startOffset - 1) {
+                            // this and the previous style segment are continuous
+                            lastLink.endOffsetInclusive = endOffsetInclusive;
+                            return;
                         }
+                        lastLink = {
+                            // section: section,
+                            // isFirstPageSection: isFirstPageSection,
+                            // paragraph: par,
+                            text: el,
+                            startOffset: startOffset,
+                            endOffsetInclusive: endOffsetInclusive,
+                            url: url,
+                            id: url.substring(29),
+                            // footnoteIndex: footnote ? footnoteIndex : 0
+                        };
+                        links.push(lastLink);
                     }
                 });
             }
         });
     });
+    return links;
 }
+
 
 /**
  * Calls the given function for each section of the document (body, header,

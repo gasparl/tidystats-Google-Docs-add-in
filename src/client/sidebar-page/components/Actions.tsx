@@ -2,6 +2,7 @@ import { useState } from "react"
 import { PrimaryButton } from "@fluentui/react/lib/Button"
 import { FontSizes, FontWeights } from "@fluentui/theme"
 import styled from "styled-components"
+import { Spinner, SpinnerSize } from "@fluentui/react"
 
 import { Tidystats } from "../classes/Tidystats"
 
@@ -27,6 +28,36 @@ type ActionsProps = {
 
 const Actions = (props: ActionsProps) => {
     const { tidystats } = props
+
+    const [updateButtonLabel, setUpdateButtonLabel] = useState(
+        "Update statistics 1"
+    )
+
+    const [updateButtonDisable, setUpdateButtonDisable] = useState(
+        false
+    )
+
+    const [updateButtonSpinner, setUpdateButtonSpinner] = useState(
+        <></>
+    )
+
+    const updateButtonClicked = () => {
+        setUpdateButtonLabel("Updating...");
+        setUpdateButtonDisable(true);
+        setUpdateButtonSpinner(<> &nbsp; &nbsp; <Spinner size={SpinnerSize.medium} /></>);
+    }
+
+    const updateFinished = () => {
+        // the small delay is added because sometimes (at least on chrome) the update
+        // appears in the document a bit later then the server promise resolution
+        // (hence the button would be seen enabled even before all updates are visible)
+        lock.releaseLock();
+        setTimeout(() => {
+            setUpdateButtonSpinner(<></>);
+            setUpdateButtonLabel("Update statistics");
+            setUpdateButtonDisable(false);
+        }, 500)
+    }
 
     const [bibTexButtonLabel, setBibTexButtonLabel] = useState(
         "Copy BibTex citation"
@@ -56,10 +87,14 @@ const Actions = (props: ActionsProps) => {
                 new statistics file.
             </ActionInstructions>
 
-            <ActionButton onClick={() =>
+            <ActionButton disabled={updateButtonDisable} onClick={() => {
+                updateButtonClicked();
                 // must be send data stringified, because Google only allows JavaScript primitives
-                serverFunctions.updateStatistics(JSON.stringify(tidystats.analyses)).catch(alert)}>
-                Update statistics
+                serverFunctions.updateStatistics(
+                    JSON.stringify(tidystats.analyses)
+                ).catch(err => { alert(err); updateFinished(); }).then(updateFinished);
+            }}>
+                {updateButtonLabel} {updateButtonSpinner}
             </ActionButton>
 
             <ActionInstructions>

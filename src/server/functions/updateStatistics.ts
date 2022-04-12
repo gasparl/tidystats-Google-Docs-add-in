@@ -3,6 +3,7 @@ import { formatValue } from "../../client/sidebar-page/components/formatValue"
 import { insertURL } from './insertURL';
 
 const doc = DocumentApp.getActiveDocument()
+ 
 const updateStatistics = (tidystatsAnalyses) => {
     console.log("Updating statistics")
     //DocumentApp.getUi().alert('Updating statistics.');

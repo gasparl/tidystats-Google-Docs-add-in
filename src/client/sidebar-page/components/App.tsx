@@ -5,7 +5,6 @@ import { Tidystats } from "../classes/Tidystats"
 import { AnalysesTable } from "./AnalysesTable"
 import { Logo } from "./Logo"
 import { Upload } from "./Upload"
-import { Progress } from "./Progress"
 import { Actions } from "./Actions"
 import { Support } from "./Support"
 

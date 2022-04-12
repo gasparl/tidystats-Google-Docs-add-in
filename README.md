@@ -6,6 +6,8 @@ This Google Docs add-in is written in [Google Apps Script](https://developers.go
 
 ### Installation
 
+Later on, the add-in is to be published and available among the official Google add-ins for easy installation. For now, it can only be installed "manually", as follows.
+
 **1.** Make sure you are running at least [Node.js](https://nodejs.org/en/download/) v10 and `npm` v6.
 
 **2.** You need to enable the Google Apps Script API. You can do that via [script.google.com/home/usersettings](https://script.google.com/home/usersettings).
@@ -13,7 +15,7 @@ This Google Docs add-in is written in [Google Apps Script](https://developers.go
 **3.** Clone the repo and install the dependencies.
 
 ```bash
-git clone https://github.com/enuchi/React-Google-Apps-Script.git
+git clone https://github.com/gasparl/tidystats-Google-Docs-add-in.git
 cd React-Google-Apps-Script
 npm install
 ```

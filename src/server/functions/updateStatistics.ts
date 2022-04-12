@@ -5,6 +5,7 @@ import { insertURL } from './insertURL';
 const doc = DocumentApp.getActiveDocument()
 const updateStatistics = (tidystatsAnalyses) => {
     console.log("Updating statistics")
+    //DocumentApp.getUi().alert('Updating statistics.');
     tidystatsAnalyses = JSON.parse(tidystatsAnalyses)
 
     const allLinks = getAllLinks();
@@ -17,7 +18,6 @@ const updateStatistics = (tidystatsAnalyses) => {
             allIDs.push(link.id);
         }
     }
-    //DocumentApp.getUi().alert('updating2.');
     for (const id of allIDs) {
         const statistic = findStatistic(id, tidystatsAnalyses);
         // Replace the statistic reported in the document with the new one, if there is one
@@ -41,12 +41,6 @@ const updateStatistics = (tidystatsAnalyses) => {
                         const tElement = rangeElement.getElement().asText();
                         const startIndex = rangeElement.getStartOffset();
                         const endIndex = rangeElement.getEndOffsetInclusive();
-                        // const text = tElement.getText().substring(startIndex, endIndex + 1);
-                        // tElement.insertText(endIndex + 1, 'x');
-                        // tElement.deleteText(startIndex, endIndex);
-                        // tElement.insertText(startIndex + 1, value);
-                        // //insertURL(tElement, id, startIndex + 1, startIndex + 1 + value.length - 1)
-                        // tElement.deleteText(startIndex, startIndex);
                         tElement.insertText(endIndex + 1, value);
                         tElement.deleteText(startIndex, endIndex);
                     } else {
@@ -59,7 +53,6 @@ const updateStatistics = (tidystatsAnalyses) => {
                             parent[parent.insertText ? 'insertText' : 'insertParagraph'](parent.getChildIndex(eElement), value);
                             eElement.removeFromParent();
                         }
-                        //insertURL(eElement, id)
                     }
                 }
             }
@@ -68,8 +61,33 @@ const updateStatistics = (tidystatsAnalyses) => {
 }
 
 
-/** (First modified from https://stackoverflow.com/a/40730088/3199106)
- * (Then modified from https://github.com/zotero/zotero-google-docs-integration/)
+/** Below, the getAllLinks function and the related iterateSection function were
+ * first modified for Zotero from https://stackoverflow.com/a/40730088/3199106.
+ * Then that code from Zotero was modified for the purpose here.
+ * (Zotero source code: https://github.com/zotero/zotero-google-docs-integration/)
+ * So, technically, they should be licensed under Zotero's GNU AGPL as follows.
+ 	***** BEGIN LICENSE BLOCK *****
+
+ 	Copyright © 2018 Center for History and New Media
+ 					George Mason University, Fairfax, Virginia, USA
+ 					http://zotero.org
+    Copyright © 2022 Gáspár Lukács
+
+ 	This is free software: you can redistribute it and/or modify
+ 	it under the terms of the GNU Affero General Public License as published by
+ 	the Free Software Foundation, either version 3 of the License, or
+ 	(at your option) any later version.
+
+ 	This software is distributed in the hope that it will be useful,
+ 	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ 	GNU Affero General Public License for more details.
+ 	(http://www.gnu.org/licenses/)
+
+ 	***** END LICENSE BLOCK *****
+ */
+
+ /**
  * Returns a flat array of links which appear in the active document's body.
  * Each link is represented by a simple Javascript object with the following
  * keys:

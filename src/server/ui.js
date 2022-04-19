@@ -19,5 +19,5 @@ export const openSidebar = () => {
 
 export const openDialogColor = () => {
     const html = HtmlService.createHtmlOutputFromFile('dialog-color-page');
-    DocumentApp.getUi().showModalDialogColor(html, 'tidystats font color');
+    DocumentApp.getUi().showModalDialog(html, 'tidystats font color');
 };

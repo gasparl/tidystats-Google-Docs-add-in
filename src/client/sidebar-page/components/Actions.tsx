@@ -86,7 +86,7 @@ const Actions = (props: ActionsProps) => {
                 // must be send data stringified, because Google only allows JavaScript primitives
                 serverFunctions.updateStatistics(
                     JSON.stringify(tidystats.analyses)
-                ).catch(err => { alert(err); updateFinished(); }).then(updateFinished);
+                ).then(updateFinished).catch(err => { alert(err); updateFinished(); });
             }}>
                 {updateButtonLabel} {updateButtonSpinner}
             </ActionButton>

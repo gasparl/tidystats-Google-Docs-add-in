@@ -1,8 +1,9 @@
-import { tidyFontColor } from "../../client/sidebar-page/components/formatValue"
-
 export const tidyID = '#!tidystats!: keep this link intact for updatable values. # ';
 
+const tidyFontColor = PropertiesService.getDocumentProperties().getProperty('tidyFontColor');
+
 export const insertURL = (elem, id, start = null, end = null) => {
+    // DocumentApp.getUi().alert(JSON.stringify(tidyFontColor));
     if (start === null) {
         elem.setLinkUrl(tidyID + id)
         elem.setUnderline(false)
@@ -10,6 +11,6 @@ export const insertURL = (elem, id, start = null, end = null) => {
     } else {
         elem.setLinkUrl(start, end, tidyID + id)
         elem.setUnderline(start, end, false)
-        elem.setForegroundColor(start, end, elem.getForegroundColor(tidyFontColor))
+        elem.setForegroundColor(start, end, tidyFontColor)
     }
 }

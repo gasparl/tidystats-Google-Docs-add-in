@@ -1,6 +1,5 @@
 import { Tidystats } from "../../client/sidebar-page/classes/Tidystats"
 import { formatValue } from "../../client/sidebar-page/components/formatValue"
-import { tidyFontColor } from "../../client/sidebar-page/components/formatValue"
 
 import { insertURL, tidyID } from './insertURL';
 
@@ -81,13 +80,18 @@ const updateColor = (newColor) => {
         DocumentApp.getUi().alert('The server seems busy at the moment. Perhaps other users are updating the statistics. Please try again later.');
         return;
     }
+    PropertiesService.getDocumentProperties().setProperty('tidyFontColor', newColor);
     for (const link of getAllLinks()) {
-        link.text.setForegroundColor(link.startOffset, link.endOffsetInclusive, tidyFontColor)
+        link.text.setForegroundColor(link.startOffset, link.endOffsetInclusive, newColor)
     }
     DocumentApp.getUi().showModalDialog(
         HtmlService.createHtmlOutput('<script>google.script.host.close();</script>'),
         'Loading...');
     Utilities.sleep(1000)
+}
+
+const getColor = () => {
+    return (PropertiesService.getDocumentProperties().getProperty('tidyFontColor'));
 }
 
 /** Below, the getAllLinks function and the related iterateSection function were
@@ -283,4 +287,4 @@ const findStatistic = (id: string, analyses) => {
 }
 
 
-export { updateStatistics, updateColor }
+export { updateStatistics, updateColor, getColor }

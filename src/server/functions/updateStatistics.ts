@@ -1,5 +1,6 @@
 import { Tidystats } from "../../client/sidebar-page/classes/Tidystats"
 import { formatValue } from "../../client/sidebar-page/components/formatValue"
+import { tidyFontColor } from "../../client/dialog-page/components/Dialog"
 import { insertURL, tidyID } from './insertURL';
 
 const tidyIDlen = tidyID.length;
@@ -71,6 +72,27 @@ const updateStatistics = (tidystatsAnalyses) => {
     // appears in the document a bit later then the server promise resolution
     // (hence the button would be seen enabled even before all updates are visible)
     // furthermore, the delay helps locking the document for sufficient time
+}
+
+
+const updateColor = () => {
+    lock.tryLock(0);
+    if (!lock.hasLock()) {
+        DocumentApp.getUi().alert('The server seems busy at the moment. Perhaps other users are updating the statistics. Please try again later.');
+        return;
+    }
+    for (const link of getAllLinks()) {
+        link.text.setForegroundColor(link.startOffset, link.endOffsetInclusive, tidyFontColor)
+    }
+    closeDialog()
+    Utilities.sleep(1000)
+}
+
+
+const closeDialog = () => {
+    DocumentApp.getUi().showModalDialog(
+        HtmlService.createHtmlOutput('<script>google.script.host.close();</script>'),
+        'Loading...');
 }
 
 /** Below, the getAllLinks function and the related iterateSection function were
@@ -266,4 +288,4 @@ const findStatistic = (id: string, analyses) => {
 }
 
 
-export { updateStatistics }
+export { updateStatistics, updateColor, closeDialog }

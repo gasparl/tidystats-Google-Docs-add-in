@@ -42,13 +42,18 @@ const copyAppscriptEntry = './appsscript.json';
 const devDialogEntry = './dev/index.tsx';
 
 // define client entry points and output names
-const clientEntrypoints = [
-  {
-    name: 'CLIENT - Sidebar',
-    entry: './src/client/sidebar-page/index.tsx',
-    filename: 'sidebar-page',
-    template: './src/client/sidebar-page/index.html',
-  }
+const clientEntrypoints = [{
+        name: 'CLIENT - Sidebar',
+        entry: './src/client/sidebar-page/index.tsx',
+        filename: 'sidebar-page',
+        template: './src/client/sidebar-page/index.html',
+    },
+    {
+        name: 'CLIENT - Dialog',
+        entry: './src/client/dialog-page/index.tsx',
+        filename: 'dialog-page',
+        template: './src/client/dialog-page/index.html',
+    }
 ];
 
 // define certificate locations
@@ -63,326 +68,331 @@ const pfxPath = path.resolve(__dirname, './certs/cert.pfx'); // if needed for Wi
 
 // webpack settings for copying files to the destination folder
 const copyFilesConfig = {
-  name: 'COPY FILES - appsscript.json',
-  mode: 'production', // unnecessary for this config, but removes console warning
-  entry: copyAppscriptEntry,
-  output: {
-    path: destination,
-  },
-  plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: copyAppscriptEntry,
-          to: destination,
-        },
-      ],
-    }),
-  ],
+    name: 'COPY FILES - appsscript.json',
+    mode: 'production', // unnecessary for this config, but removes console warning
+    entry: copyAppscriptEntry,
+    output: {
+        path: destination,
+    },
+    plugins: [
+        new CopyWebpackPlugin({
+            patterns: [{
+                from: copyAppscriptEntry,
+                to: destination,
+            }, ],
+        }),
+    ],
 };
 
 // webpack settings used by both client and server
 const sharedClientAndServerConfig = {
-  context: __dirname,
+    context: __dirname,
 };
 
 // webpack settings used by all client entrypoints
-const clientConfig = ({ isDevClientWrapper }) => ({
-  ...sharedClientAndServerConfig,
-  mode: isProd ? 'production' : 'development',
-  output: {
-    path: destination,
-    // this file will get added to the html template inline
-    // and should be put in .claspignore so it is not pushed
-    filename: 'main.js',
-  },
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-  },
-  module: {
-    rules: [
-      // typescript config
-      {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-            // only enable react-refresh for dev builds, and not when building the dev client "wrapper"
-            options: {
-              plugins: [
-                !isProd &&
-                  !isDevClientWrapper &&
-                  require.resolve('react-refresh/babel'),
-              ].filter(Boolean),
+const clientConfig = ({
+    isDevClientWrapper
+}) => ({
+    ...sharedClientAndServerConfig,
+    mode: isProd ? 'production' : 'development',
+    output: {
+        path: destination,
+        // this file will get added to the html template inline
+        // and should be put in .claspignore so it is not pushed
+        filename: 'main.js',
+    },
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    },
+    module: {
+        rules: [
+            // typescript config
+            {
+                test: /\.tsx?$/,
+                exclude: /node_modules/,
+                use: [{
+                        loader: 'babel-loader',
+                        // only enable react-refresh for dev builds, and not when building the dev client "wrapper"
+                        options: {
+                            plugins: [
+                                !isProd &&
+                                !isDevClientWrapper &&
+                                require.resolve('react-refresh/babel'),
+                            ].filter(Boolean),
+                        },
+                    },
+                    {
+                        loader: 'ts-loader',
+                    },
+                ],
             },
-          },
-          {
-            loader: 'ts-loader',
-          },
+            {
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    // only enable react-refresh for dev builds, and not when building the dev client "wrapper"
+                    options: {
+                        plugins: [
+                            !isProd &&
+                            !isDevClientWrapper &&
+                            require.resolve('react-refresh/babel'),
+                        ].filter(Boolean),
+                    },
+                },
+            },
+            // we could add support for scss here
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.svg$/,
+                use: [{
+                        loader: "babel-loader"
+                    },
+                    {
+                        loader: "react-svg-loader",
+                        options: {
+                            jsx: true // true outputs JSX tags
+                        }
+                    }
+                ]
+            },
         ],
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          // only enable react-refresh for dev builds, and not when building the dev client "wrapper"
-          options: {
-            plugins: [
-              !isProd &&
-                !isDevClientWrapper &&
-                require.resolve('react-refresh/babel'),
-            ].filter(Boolean),
-          },
-        },
-      },
-      // we could add support for scss here
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
-          test: /\.svg$/,
-          use: [
-            {
-              loader: "babel-loader"
-            },
-            {
-              loader: "react-svg-loader",
-              options: {
-                jsx: true // true outputs JSX tags
-              }
-            }
-          ]
-      },
-    ],
-  },
+    },
 });
 // DynamicCdnWebpackPlugin settings
 // these settings help us load 'react', 'react-dom' and the packages defined below from a CDN
 // see https://github.com/enuchi/React-Google-Apps-Script#adding-new-libraries-and-packages
 const DynamicCdnWebpackPluginConfig = {
-  // set "verbose" to true to print console logs on CDN usage while webpack builds
-  verbose: false,
-  resolver: (packageName, packageVersion, options) => {
-    const packageSuffix = isProd ? '.min.js' : '.js';
-    const moduleDetails = moduleToCdn(packageName, packageVersion, options);
+    // set "verbose" to true to print console logs on CDN usage while webpack builds
+    verbose: false,
+    resolver: (packageName, packageVersion, options) => {
+        const packageSuffix = isProd ? '.min.js' : '.js';
+        const moduleDetails = moduleToCdn(packageName, packageVersion, options);
 
-    // don't externalize react during development due to issue with react-refresh
-    // https://github.com/pmmmwh/react-refresh-webpack-plugin/issues/334
-    if (!isProd && packageName === 'react') {
-      return null;
-    }
+        // don't externalize react during development due to issue with react-refresh
+        // https://github.com/pmmmwh/react-refresh-webpack-plugin/issues/334
+        if (!isProd && packageName === 'react') {
+            return null;
+        }
 
-    // return defaults if Dynamic CDN plugin finds package
-    if (moduleDetails) {
-      return moduleDetails;
-    }
+        // return defaults if Dynamic CDN plugin finds package
+        if (moduleDetails) {
+            return moduleDetails;
+        }
 
-    // define custom CDN configuration for new packages
-    // "name" should match the package being imported
-    // "var" is important to get right -- this should be the exposed global. Look up "webpack externals" for info.
-    switch (packageName) {
-      case 'react-transition-group':
-        return {
-          name: packageName,
-          var: 'ReactTransitionGroup',
-          version: packageVersion,
-          url: `https://unpkg.com/react-transition-group@${packageVersion}/dist/react-transition-group${packageSuffix}`,
-        };
-      case 'react-bootstrap':
-        return {
-          name: packageName,
-          var: 'ReactBootstrap',
-          version: packageVersion,
-          url: `https://unpkg.com/react-bootstrap@${packageVersion}/dist/react-bootstrap${packageSuffix}`,
-        };
-      default:
-        return null;
-    }
-  },
+        // define custom CDN configuration for new packages
+        // "name" should match the package being imported
+        // "var" is important to get right -- this should be the exposed global. Look up "webpack externals" for info.
+        switch (packageName) {
+            case 'react-transition-group':
+                return {
+                    name: packageName,
+                        var: 'ReactTransitionGroup',
+                        version: packageVersion,
+                        url: `https://unpkg.com/react-transition-group@${packageVersion}/dist/react-transition-group${packageSuffix}`,
+                };
+            case 'react-bootstrap':
+                return {
+                    name: packageName,
+                        var: 'ReactBootstrap',
+                        version: packageVersion,
+                        url: `https://unpkg.com/react-bootstrap@${packageVersion}/dist/react-bootstrap${packageSuffix}`,
+                };
+            default:
+                return null;
+        }
+    },
 };
 
 // webpack settings used by each client entrypoint defined at top
 const clientConfigs = clientEntrypoints.map(clientEntrypoint => {
-  const isDevClientWrapper = false;
-  return {
-    ...clientConfig({ isDevClientWrapper }),
-    name: clientEntrypoint.name,
-    entry: clientEntrypoint.entry,
-    plugins: [
-      !isProd && new webpack.HotModuleReplacementPlugin(),
-      !isProd && new ReactRefreshWebpackPlugin(),
-      new webpack.DefinePlugin({
-        'process.env': JSON.stringify(envVars),
-      }),
-      new HtmlWebpackPlugin({
-        template: clientEntrypoint.template,
-        filename: `${clientEntrypoint.filename}${isProd ? '' : '-impl'}.html`,
-        inlineSource: '^[^(//)]+.(js|css)$', // embed all js and css inline, exclude packages with '//' for dynamic cdn insertion
-      }),
-      // add the generated js code to the html file inline
-      new HtmlWebpackInlineSourcePlugin(),
-      // this plugin allows us to add dynamically load packages from a CDN
-      new DynamicCdnWebpackPlugin(DynamicCdnWebpackPluginConfig),
-    ].filter(Boolean),
-  };
+    const isDevClientWrapper = false;
+    return {
+        ...clientConfig({
+            isDevClientWrapper
+        }),
+        name: clientEntrypoint.name,
+        entry: clientEntrypoint.entry,
+        plugins: [
+            !isProd && new webpack.HotModuleReplacementPlugin(),
+            !isProd && new ReactRefreshWebpackPlugin(),
+            new webpack.DefinePlugin({
+                'process.env': JSON.stringify(envVars),
+            }),
+            new HtmlWebpackPlugin({
+                template: clientEntrypoint.template,
+                filename: `${clientEntrypoint.filename}${isProd ? '' : '-impl'}.html`,
+                inlineSource: '^[^(//)]+.(js|css)$', // embed all js and css inline, exclude packages with '//' for dynamic cdn insertion
+            }),
+            // add the generated js code to the html file inline
+            new HtmlWebpackInlineSourcePlugin(),
+            // this plugin allows us to add dynamically load packages from a CDN
+            new DynamicCdnWebpackPlugin(DynamicCdnWebpackPluginConfig),
+        ].filter(Boolean),
+    };
 });
 
 // webpack settings for devServer https://webpack.js.org/configuration/dev-server/
 const devServer = {
-  hot: true,
-  port: PORT,
-  https: true,
+    hot: true,
+    port: PORT,
+    https: true,
 };
 
 if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
-  // use key and cert settings only if they are found
-  devServer.https = {
-    key: fs.readFileSync(keyPath),
-    cert: fs.readFileSync(certPath),
-  };
+    // use key and cert settings only if they are found
+    devServer.https = {
+        key: fs.readFileSync(keyPath),
+        cert: fs.readFileSync(certPath),
+    };
 }
 
 // If mkcert -install cannot be used on Windows machines (in pipeline, for example), the
 // script at test/generate-cert.ps1 can be used to create a .pfx cert
 if (fs.existsSync(pfxPath)) {
-  // use pfx file if it's found
-  devServer.https = {
-    pfx: fs.readFileSync(pfxPath),
-    passphrase: 'abc123',
-  };
+    // use pfx file if it's found
+    devServer.https = {
+        pfx: fs.readFileSync(pfxPath),
+        passphrase: 'abc123',
+    };
 }
 
 // webpack settings for the development client wrapper
 const devClientConfigs = clientEntrypoints.map(clientEntrypoint => {
-  envVars.FILENAME = clientEntrypoint.filename;
-  const isDevClientWrapper = true;
-  return {
-    ...clientConfig({ isDevClientWrapper }),
-    name: `DEVELOPMENT: ${clientEntrypoint.name}`,
-    entry: devDialogEntry,
-    plugins: [
-      new webpack.DefinePlugin({
-        'process.env': JSON.stringify(envVars),
-      }),
-      new HtmlWebpackPlugin({
-        template: './dev/index.html',
-        // this should match the html files we load in src/server/ui.js
-        filename: `${clientEntrypoint.filename}.html`,
-        inlineSource: '^[^(//)]+.(js|css)$', // embed all js and css inline, exclude packages with '//' for dynamic cdn insertion
-      }),
-      new HtmlWebpackInlineSourcePlugin(),
-      new DynamicCdnWebpackPlugin({}),
-    ],
-  };
+    envVars.FILENAME = clientEntrypoint.filename;
+    const isDevClientWrapper = true;
+    return {
+        ...clientConfig({
+            isDevClientWrapper
+        }),
+        name: `DEVELOPMENT: ${clientEntrypoint.name}`,
+        entry: devDialogEntry,
+        plugins: [
+            new webpack.DefinePlugin({
+                'process.env': JSON.stringify(envVars),
+            }),
+            new HtmlWebpackPlugin({
+                template: './dev/index.html',
+                // this should match the html files we load in src/server/ui.js
+                filename: `${clientEntrypoint.filename}.html`,
+                inlineSource: '^[^(//)]+.(js|css)$', // embed all js and css inline, exclude packages with '//' for dynamic cdn insertion
+            }),
+            new HtmlWebpackInlineSourcePlugin(),
+            new DynamicCdnWebpackPlugin({}),
+        ],
+    };
 });
 
 // webpack settings used by the server-side code
 const serverConfig = {
-  ...sharedClientAndServerConfig,
-  name: 'SERVER',
-  // server config can't use 'development' mode
-  // https://github.com/fossamagna/gas-webpack-plugin/issues/135
-  mode: isProd ? 'production' : 'none',
-  entry: serverEntry,
-  output: {
-    filename: 'code.js',
-    path: destination,
-    libraryTarget: 'this',
-  },
-  resolve: {
-    extensions: ['.ts', '.js', '.json'],
-  },
-  module: {
-    rules: [
-      // typescript config
-      {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-          },
-          {
-            loader: 'ts-loader',
-          },
-        ],
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-        },
-      },
-      {
-          test: /\.svg$/,
-          use: [
+    ...sharedClientAndServerConfig,
+    name: 'SERVER',
+    // server config can't use 'development' mode
+    // https://github.com/fossamagna/gas-webpack-plugin/issues/135
+    mode: isProd ? 'production' : 'none',
+    entry: serverEntry,
+    output: {
+        filename: 'code.js',
+        path: destination,
+        libraryTarget: 'this',
+    },
+    resolve: {
+        extensions: ['.ts', '.js', '.json'],
+    },
+    module: {
+        rules: [
+            // typescript config
             {
-              loader: "babel-loader"
+                test: /\.tsx?$/,
+                exclude: /node_modules/,
+                use: [{
+                        loader: 'babel-loader',
+                    },
+                    {
+                        loader: 'ts-loader',
+                    },
+                ],
             },
             {
-              loader: "react-svg-loader",
-              options: {
-                jsx: true // true outputs JSX tags
-              }
-            }
-          ]
-      },
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                },
+            },
+            {
+                test: /\.svg$/,
+                use: [{
+                        loader: "babel-loader"
+                    },
+                    {
+                        loader: "react-svg-loader",
+                        options: {
+                            jsx: true // true outputs JSX tags
+                        }
+                    }
+                ]
+            },
+        ],
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                sourceMap: true,
+                terserOptions: {
+                    // ecma 5 is needed to support Rhino "DEPRECATED_ES5" runtime
+                    // can use ecma 6 if V8 runtime is used
+                    ecma: 5,
+                    warnings: false,
+                    parse: {},
+                    compress: {
+                        properties: false,
+                    },
+                    mangle: false,
+                    module: false,
+                    output: {
+                        beautify: true,
+                        // support custom function autocompletion
+                        // https://developers.google.com/apps-script/guides/sheets/functions
+                        comments: /@customfunction/,
+                    },
+                },
+            }),
+        ],
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            // replace any env variables in client-side code like PORT and NODE_ENV with actual values
+            'process.env': JSON.stringify(envVars),
+            'process.env.NODE_ENV': JSON.stringify(
+                isProd ? 'production' : 'development'
+            ),
+        }),
+        new GasPlugin({
+            // removes need for assigning public server functions to "global"
+            autoGlobalExportsFiles: [serverEntry],
+        }),
     ],
-  },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        sourceMap: true,
-        terserOptions: {
-          // ecma 5 is needed to support Rhino "DEPRECATED_ES5" runtime
-          // can use ecma 6 if V8 runtime is used
-          ecma: 5,
-          warnings: false,
-          parse: {},
-          compress: {
-            properties: false,
-          },
-          mangle: false,
-          module: false,
-          output: {
-            beautify: true,
-            // support custom function autocompletion
-            // https://developers.google.com/apps-script/guides/sheets/functions
-            comments: /@customfunction/,
-          },
-        },
-      }),
-    ],
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      // replace any env variables in client-side code like PORT and NODE_ENV with actual values
-      'process.env': JSON.stringify(envVars),
-      'process.env.NODE_ENV': JSON.stringify(
-        isProd ? 'production' : 'development'
-      ),
-    }),
-    new GasPlugin({
-      // removes need for assigning public server functions to "global"
-      autoGlobalExportsFiles: [serverEntry],
-    }),
-  ],
 };
 
 module.exports = [
-  // 1. Copy appsscript.json to destination,
-  // 2. Set up webpack dev server during development
-  // Note: devServer settings are only read in the first element when module.exports is an array
-  { ...copyFilesConfig, ...(isProd ? {} : { devServer }) },
-  // 3. Create the server bundle
-  serverConfig,
-  // 4. Create one client bundle for each client entrypoint.
-  ...clientConfigs,
-  // 5. Create a development dialog bundle for each client entrypoint during development.
-  ...(isProd ? [] : devClientConfigs),
+    // 1. Copy appsscript.json to destination,
+    // 2. Set up webpack dev server during development
+    // Note: devServer settings are only read in the first element when module.exports is an array
+    {
+        ...copyFilesConfig,
+        ...(isProd ? {} : {
+            devServer
+        })
+    },
+    // 3. Create the server bundle
+    serverConfig,
+    // 4. Create one client bundle for each client entrypoint.
+    ...clientConfigs,
+    // 5. Create a development dialog bundle for each client entrypoint during development.
+    ...(isProd ? [] : devClientConfigs),
 ];

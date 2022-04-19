@@ -1,6 +1,7 @@
 import {
   onOpen,
   openSidebar,
+  openDialog,
 } from './ui';
 
 import { insertPlain } from './functions/insertPlain';
@@ -13,6 +14,7 @@ import { updateStatistics } from './functions/updateStatistics';
 export {
   onOpen,
   openSidebar,
+  openDialog,
   insertPlain,
   insertStatistic,
   insertStatistics,

@@ -1,7 +1,7 @@
 import {
     onOpen,
     openSidebar,
-    openDialog,
+    openDialogColor,
 } from './ui';
 
 import { insertPlain } from './functions/insertPlain';
@@ -15,7 +15,7 @@ import { updateStatistics, updateColor, getColor } from './functions/updateStati
 export {
     onOpen,
     openSidebar,
-    openDialog,
+    openDialogColor,
     insertPlain,
     insertStatistic,
     insertStatistics,

@@ -6,7 +6,7 @@ export const onOpen = () => {
     const menu = DocumentApp.getUi()
         .createMenu('tidystats')
         .addItem('Insert statistics', 'openSidebar')
-        .addItem('Font color', 'openDialog')
+        .addItem('Font color', 'openDialogColor')
         .addToUi();
 };
 
@@ -17,7 +17,7 @@ export const openSidebar = () => {
 };
 
 
-export const openDialog = () => {
-    const html = HtmlService.createHtmlOutputFromFile('dialog-page');
-    DocumentApp.getUi().showModalDialog(html, 'tidystats font color');
+export const openDialogColor = () => {
+    const html = HtmlService.createHtmlOutputFromFile('dialog-color-page');
+    DocumentApp.getUi().showModalDialogColor(html, 'tidystats font color');
 };

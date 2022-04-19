@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Dialog } from './components/Dialog';
+import { DialogColor } from './components/DialogColor';
 import './index.css';
 
-ReactDOM.render(<Dialog />, document.getElementById('index'));
+ReactDOM.render(<DialogColor />, document.getElementById('index'));

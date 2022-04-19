@@ -84,7 +84,7 @@ const updateColor = (newColor) => {
     for (const link of getAllLinks()) {
         link.text.setForegroundColor(link.startOffset, link.endOffsetInclusive, newColor)
     }
-    DocumentApp.getUi().showModalDialog(
+    DocumentApp.getUi().showModalDialogColor(
         HtmlService.createHtmlOutput('<script>google.script.host.close();</script>'),
         'Loading...');
     Utilities.sleep(1000)

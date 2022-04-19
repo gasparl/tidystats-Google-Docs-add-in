@@ -11,7 +11,7 @@ Each React app will need:
 - an HTML file that acts as a template, in which the bundled React app is loaded
 
 You'll need to declare the following in [webpack.config.js](../../webpack.config.js):
-- **name**: just a name to print in the webpack console, e.g. 'CLIENT - Dialog Demo'
+- **name**: just a name to print in the webpack console, e.g. 'CLIENT - DialogColor Demo'
 - **entry**: the path to the entry point for the app, e.g. './src/client/dialog-demo/index.js'
 - **filename**: the name of the html file that is generated. The server code will reference this filename to load the app into a dialog window. E.g. 'dialog-demo'
 - **template**: the path to the HTML template for the app, e.g. './src/client/dialog-demo/index.html'

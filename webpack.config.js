@@ -39,7 +39,7 @@ const serverEntry = './src/server/index.ts';
 const copyAppscriptEntry = './appsscript.json';
 
 // define live development dialog paths
-const devDialogEntry = './dev/index.tsx';
+const devDialogColorEntry = './dev/index.tsx';
 
 // define client entry points and output names
 const clientEntrypoints = [{
@@ -49,10 +49,10 @@ const clientEntrypoints = [{
         template: './src/client/sidebar-page/index.html',
     },
     {
-        name: 'CLIENT - Dialog',
-        entry: './src/client/dialog-page/index.tsx',
-        filename: 'dialog-page',
-        template: './src/client/dialog-page/index.html',
+        name: 'CLIENT - DialogColor',
+        entry: './src/client/dialog-color-page/index.tsx',
+        filename: 'dialog-color-page',
+        template: './src/client/dialog-color-page/index.html',
     }
 ];
 
@@ -269,7 +269,7 @@ const devClientConfigs = clientEntrypoints.map(clientEntrypoint => {
             isDevClientWrapper
         }),
         name: `DEVELOPMENT: ${clientEntrypoint.name}`,
-        entry: devDialogEntry,
+        entry: devDialogColorEntry,
         plugins: [
             new webpack.DefinePlugin({
                 'process.env': JSON.stringify(envVars),

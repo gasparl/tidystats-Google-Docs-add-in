@@ -54,7 +54,7 @@ export const Dialog = () => {
         <>
             <ActionInstructions>
                 Here you can provide a new font color for all updatable statistics (inserted number values). This will recolor all existing values and future insertions will happen in this same color. (This change can be repeated here anytime, also to reset the original default value, <b>#000000</b>, indicating black.)<br></br>
-                Current color: <span color={tidyFontColor}>{tidyFontColor}</span>.
+                Current color: <span style={{color: tidyFontColor}}>{tidyFontColor}</span>.
             </ActionInstructions>
             <ActionInstructions>
                 New color value (in hexidecimal "HEX" value):<br></br>

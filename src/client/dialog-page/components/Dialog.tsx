@@ -16,9 +16,9 @@ const ActionButton = styled(PrimaryButton)`
   min-width: 180px;
 `
 
-export let tidyFontColor = '#000000';
+let tidyFontColor  = '#000000'
 
-const Dialog = () => {
+export const Dialog = () => {
 
     const [colorButtonLabel, setColorButtonLabel] = useState(
         "Set new color"
@@ -38,7 +38,6 @@ const Dialog = () => {
         setColorButtonSpinner(<> &nbsp; &nbsp; <Spinner size={SpinnerSize.medium} /></>);
     }
 
-
     return (
         <>
             <ActionInstructions>
@@ -46,24 +45,23 @@ const Dialog = () => {
             </ActionInstructions>
             <ActionInstructions>
                 New color value (in hexidecimal):
-                    <input type="text" id="color_input" value={tidyFontColor} maxLength={7}></input>
-                </ActionInstructions>
+                    <input type="text" id="color_input" value={tidyFontColor} maxLength={7} size={8}></input>
+            </ActionInstructions>
 
-                <ActionButton disabled={colorButtonDisable} onClick={() => {
-                    serverFunctions.closeDialog().catch(err => { alert(err); });
-                }}>
-                    Cancel
-                </ActionButton>
-                <ActionButton disabled={colorButtonDisable} onClick={() => {
-                    colorButtonClicked();
-                    serverFunctions.updateColor(
-                        (document.getElementById('color_input') as HTMLInputElement).value
-                    ).catch(err => { alert(err); });
-                }}>
-                    {colorButtonLabel} {colorButtonSpinner}
-                </ActionButton>
+            <ActionButton disabled={colorButtonDisable} onClick={() => {
+                serverFunctions.closeDialog().catch(err => { alert(err); });
+            }}>
+                Cancel
+            </ActionButton>
+            &nbsp; &nbsp;
+            <ActionButton disabled={colorButtonDisable} onClick={() => {
+                colorButtonClicked();
+                serverFunctions.updateColor(
+                    (document.getElementById('color_input') as HTMLInputElement).value
+                ).catch(err => { alert(err); });
+            }}>
+                {colorButtonLabel} {colorButtonSpinner}
+            </ActionButton>
         </>
-            )
-        };
-
-export {Dialog};
+    )
+};

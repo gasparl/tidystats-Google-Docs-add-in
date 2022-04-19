@@ -3,6 +3,9 @@ import { Statistic, RangedStatistic } from "../classes/Statistic"
 const SMOL = ["p", "r", "R²"]
 const INTEGERS = ["df", "df numerator", "df denominator"]
 
+
+export const tidyFontColor = '#000000';
+
 const formatValue = (
     x: Statistic | RangedStatistic,
     decimals: number,

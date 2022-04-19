@@ -1,4 +1,4 @@
-import { tidyFontColor } from "../../client/dialog-page/components/Dialog"
+import { tidyFontColor } from "../../client/sidebar-page/components/formatValue"
 
 export const tidyID = '#!tidystats!: keep this link intact for updatable values. # ';
 

@@ -8,7 +8,7 @@ const tidyIDlen = tidyID.length;
 const doc = DocumentApp.getActiveDocument();
 const lock = LockService.getDocumentLock();
 
-const updateStatistics = (tidystatsAnalyses) => {
+const updateStatistics = (tidystatsAnalyses, replaceAll = false) => {
     lock.tryLock(0);
     if (!lock.hasLock()) {
         DocumentApp.getUi().alert('The server seems busy at the moment. Perhaps other users are updating the statistics. Please try again later.');
@@ -16,7 +16,9 @@ const updateStatistics = (tidystatsAnalyses) => {
     }
     // console.log("Updating statistics")
     // DocumentApp.getUi().alert('Updating statistics.');
-    tidystatsAnalyses = JSON.parse(tidystatsAnalyses)
+    if (!replaceAll) {
+        tidystatsAnalyses = JSON.parse(tidystatsAnalyses)
+    }
     const allLinks = getAllLinks();
     const allIDs = [];
     for (const link of allLinks) {
@@ -27,17 +29,26 @@ const updateStatistics = (tidystatsAnalyses) => {
             allIDs.push(link.id);
         }
     }
+    let statistic, value;
     for (const id of allIDs) {
-        const statistic = findStatistic(id, tidystatsAnalyses);
+        if (replaceAll) {
+            statistic = true;
+        } else {
+            statistic = findStatistic(id, tidystatsAnalyses);
+        }
         // Replace the statistic reported in the document with the new one, if there is one
         if (statistic) {
-            // Check whether a lower or upper bound was reported
-            const components = id.split("$")
-            let bound
-            if (components[components.length - 1].match(/lower|upper/)) {
-                bound = components.pop()
+            if (replaceAll) {
+                value = tidystatsAnalyses
+            } else {
+                // Check whether a lower or upper bound was reported
+                const components = id.split("$")
+                let bound
+                if (components[components.length - 1].match(/lower|upper/)) {
+                    bound = components.pop()
+                }
+                value = formatValue(statistic, 2, bound as "lower" | "upper")
             }
-            const value = formatValue(statistic, 2, bound as "lower" | "upper")
 
             // Loop over the content controls items and update the statistics
             for (const myNamedRange of doc.getNamedRanges(id)) {
@@ -67,11 +78,20 @@ const updateStatistics = (tidystatsAnalyses) => {
             }
         }
     }
+    if (replaceAll) {
+        closeDialog();
+    }
     Utilities.sleep(1000)
     // the small delay is added because sometimes (at least on chrome) the update
     // appears in the document a bit later then the server promise resolution
     // (hence the button would be seen enabled even before all updates are visible)
     // furthermore, the delay helps locking the document for sufficient time
+}
+
+const closeDialog = () => {
+    DocumentApp.getUi().showModalDialog(
+        HtmlService.createHtmlOutput('<script>google.script.host.close();</script>'),
+        'Loading...');
 }
 
 const updateColor = (newColor) => {
@@ -84,9 +104,7 @@ const updateColor = (newColor) => {
     for (const link of getAllLinks()) {
         link.text.setForegroundColor(link.startOffset, link.endOffsetInclusive, newColor)
     }
-    DocumentApp.getUi().showModalDialog(
-        HtmlService.createHtmlOutput('<script>google.script.host.close();</script>'),
-        'Loading...');
+    closeDialog();
     Utilities.sleep(1000)
 }
 

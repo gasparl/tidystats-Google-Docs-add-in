@@ -2,6 +2,7 @@ import {
     onOpen,
     openSidebar,
     openDialogColor,
+    openDialogReplace
 } from './ui';
 
 import { insertPlain } from './functions/insertPlain';
@@ -16,6 +17,7 @@ export {
     onOpen,
     openSidebar,
     openDialogColor,
+    openDialogReplace,
     insertPlain,
     insertStatistic,
     insertStatistics,

@@ -53,6 +53,12 @@ const clientEntrypoints = [{
         entry: './src/client/dialog-color-page/index.tsx',
         filename: 'dialog-color-page',
         template: './src/client/dialog-color-page/index.html',
+    },
+    {
+        name: 'CLIENT - DialogReplace',
+        entry: './src/client/dialog-replace-page/index.tsx',
+        filename: 'dialog-replace-page',
+        template: './src/client/dialog-replace-page/index.html',
     }
 ];
 

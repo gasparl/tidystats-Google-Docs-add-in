@@ -47,13 +47,6 @@ export const Dialog = () => {
                 New color value (in hexidecimal):
                     <input type="text" id="color_input" value={tidyFontColor} maxLength={7} size={8}></input>
             </ActionInstructions>
-
-            <ActionButton disabled={colorButtonDisable} onClick={() => {
-                serverFunctions.closeDialog().catch(err => { alert(err); });
-            }}>
-                Cancel
-            </ActionButton>
-            &nbsp; &nbsp;
             <ActionButton disabled={colorButtonDisable} onClick={() => {
                 colorButtonClicked();
                 serverFunctions.updateColor(

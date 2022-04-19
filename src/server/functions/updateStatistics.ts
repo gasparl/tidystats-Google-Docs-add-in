@@ -1,8 +1,10 @@
 import { Tidystats } from "../../client/sidebar-page/classes/Tidystats"
 import { formatValue } from "../../client/sidebar-page/components/formatValue"
-import { insertURL } from './insertURL';
+import { insertURL, tidyID } from './insertURL';
 
-const doc = DocumentApp.getActiveDocument()
+const tidyIDlen = tidyID.length;
+
+const doc = DocumentApp.getActiveDocument();
 const lock = LockService.getDocumentLock();
 
 const updateStatistics = (tidystatsAnalyses) => {
@@ -153,7 +155,7 @@ const getAllLinks = () => {
                 let lastLink = null;
                 attributeIndices.forEach(function(startOffset, i, attributeIndices) {
                     const url = el.getLinkUrl(startOffset);
-                    if (url != null && url ?.indexOf('https://www.tidystats.io/?id=') === 0) {
+                    if (url != null && url ?.indexOf(tidyID) === 0) {
                         // we hit a link
                         const endOffsetInclusive = (i + 1 < attributeIndices.length ?
                             attributeIndices[i + 1] - 1 : el.getText().length - 1);
@@ -172,7 +174,7 @@ const getAllLinks = () => {
                             startOffset: startOffset,
                             endOffsetInclusive: endOffsetInclusive,
                             url: url,
-                            id: url.substring(29),
+                            id: url.substring(tidyIDlen),
                             // footnoteIndex: footnote ? footnoteIndex : 0
                         };
                         links.push(lastLink);

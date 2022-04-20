@@ -1,20 +1,8 @@
 import { useState } from "react"
-import { PrimaryButton } from "@fluentui/react/lib/Button"
-import { FontSizes, FontWeights } from "@fluentui/theme"
-import styled from "styled-components"
 import { Spinner, SpinnerSize } from "@fluentui/react"
 
 import { serverFunctions } from '../../utils/serverFunctions';
 
-const ActionInstructions = styled.p`
-  font-size: ${FontSizes.size14};
-  font-weight: ${FontWeights.regular};
-`
-const ActionButton = styled(PrimaryButton)`
-  display: inline-block;
-  margin-bottom: 0.5rem;
-  min-width: 180px;
-`
 
 export const DialogColor = () => {
 
@@ -46,18 +34,21 @@ export const DialogColor = () => {
 
     return (
         <>
-            <ActionInstructions>
+            <div>
                 Here you can replace all updatable statistics (inserted number values) with a value specified below. (This is intended for temporarily masking the actual numeric results, e.g. for registered reports.)
                 <br></br>
-                The fields with the values will remain updatable, so you may at any time use the "Update statistics" button to replace them with the statistics from tidystats JSON files. (And of course you can also always use Google Docs' version history to reverse unwanted changes.)
-            </ActionInstructions>
-            <ActionInstructions>
+                <br></br>
+                <p className='gray'>
+                    The fields with the values will remain updatable, so you may at any time use the "Update statistics" button to replace them with the statistics from tidystats JSON files. (And of course you can also always use Google Docs' version history to reverse unwanted changes.)
+                </p>
+            </div>
+            <div>
                 Replacement value:<br></br>
                 <input type="text" id="val_input" defaultValue='NA' maxLength={20} size={8}></input>
-            </ActionInstructions>
-            <ActionButton disabled={replaceButtonDisable} onClick={replaceAll}>
+            </div>
+            <button className="action" disabled={replaceButtonDisable} onClick={replaceAll}>
                 {replaceButtonLabel} {replaceButtonSpinner}
-            </ActionButton>
+            </button>
         </>
     )
 };

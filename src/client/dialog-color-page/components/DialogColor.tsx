@@ -1,20 +1,7 @@
 import { useState } from "react"
-import { PrimaryButton } from "@fluentui/react/lib/Button"
-import { FontSizes, FontWeights } from "@fluentui/theme"
-import styled from "styled-components"
 import { Spinner, SpinnerSize } from "@fluentui/react"
-
 import { serverFunctions } from '../../utils/serverFunctions';
 
-const ActionInstructions = styled.p`
-  font-size: ${FontSizes.size14};
-  font-weight: ${FontWeights.regular};
-`
-const ActionButton = styled(PrimaryButton)`
-  display: inline-block;
-  margin-bottom: 0.5rem;
-  min-width: 180px;
-`
 
 export const DialogColor = () => {
 
@@ -52,17 +39,19 @@ export const DialogColor = () => {
 
     return (
         <>
-            <ActionInstructions>
-                Here you can provide a new font color for all updatable statistics (inserted number values). This will recolor all existing values and future insertions will happen in this same color. (This change can be repeated here anytime, also to reset the original default value, <b>#000000</b>, indicating black.)<br></br>
+            <div>
+                Here you can provide a new font color for all updatable statistics (inserted number values). This will recolor all existing values and future insertions will happen in this same color. (This change can be repeated here anytime, also to reset the original default value, <b>#000000</b>, indicating black.)
+                <br></br>
+                <br></br>
                 Current color: <span style={{color: tidyFontColor}}>{tidyFontColor}</span>.
-            </ActionInstructions>
-            <ActionInstructions>
+            </div>
+            <div>
                 New color value (in hexidecimal "HEX" value):<br></br>
                 <input type="text" id="color_input" defaultValue='#' maxLength={7} size={8}></input>
-            </ActionInstructions>
-            <ActionButton disabled={colorButtonDisable} onClick={changeColor}>
+            </div>
+            <button className="action" disabled={colorButtonDisable} onClick={changeColor}>
                 {colorButtonLabel} {colorButtonSpinner}
-            </ActionButton>
+            </button>
         </>
     )
 };

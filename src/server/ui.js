@@ -5,9 +5,9 @@ export const onOpen = () => {
     }
     const menu = DocumentApp.getUi()
         .createMenu('tidystats')
-        .addItem('Insert statistics', 'openSidebar')
-        .addItem('Font color', 'openDialogColor')
-        .addItem('Replace all', 'openDialogReplace')
+        .addItem('📊 Insert statistics', 'openSidebar')
+        .addItem('🖌 Font color', 'openDialogColor')
+        .addItem('❗ Replace all', 'openDialogReplace')
         .addToUi();
 };
 

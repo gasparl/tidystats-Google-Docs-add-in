@@ -1,26 +1,9 @@
 import { useState } from "react"
-import { PrimaryButton } from "@fluentui/react/lib/Button"
-import { FontSizes, FontWeights } from "@fluentui/theme"
-import styled from "styled-components"
 import { Spinner, SpinnerSize } from "@fluentui/react"
 
 import { Tidystats } from "../classes/Tidystats"
 
 import { serverFunctions } from '../../utils/serverFunctions';
-
-const ActionHeader = styled.h3`
-  margin-bottom: 0;
-`
-
-const ActionInstructions = styled.p`
-  font-size: ${FontSizes.size14};
-  font-weight: ${FontWeights.regular};
-`
-const ActionButton = styled(PrimaryButton)`
-  display: block;
-  margin-bottom: 0.5rem;
-  min-width: 180px;
-`
 
 type ActionsProps = {
     tidystats: Tidystats
@@ -75,13 +58,13 @@ const Actions = (props: ActionsProps) => {
 
     return (
         <>
-            <ActionHeader>Actions:</ActionHeader>
-            <ActionInstructions>
+            <h3>Actions:</h3>
+            <div>
                 Automatically update all statistics in your document after uploading a
                 new statistics file.
-            </ActionInstructions>
+            </div>
 
-            <ActionButton disabled={updateButtonDisable} onClick={() => {
+            <button className="action" disabled={updateButtonDisable} onClick={() => {
                 updateButtonClicked();
                 // must be send data stringified, because Google only allows JavaScript primitives
                 serverFunctions.updateStatistics(
@@ -89,23 +72,23 @@ const Actions = (props: ActionsProps) => {
                 ).then(updateFinished).catch(err => { alert(err); updateFinished(); });
             }}>
                 {updateButtonLabel} {updateButtonSpinner}
-            </ActionButton>
+            </button>
 
-            <ActionInstructions>
+            <div>
                 Was tidystats useful to you? If so, please consider citing it. Thanks!
-            </ActionInstructions>
+            </div>
 
-            <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers (2021)').catch(alert)}>
+            <button className="action" onClick={() => serverFunctions.insertPlain('Sleegers (2021)').catch(alert)}>
                 Insert in-text citation
-            </ActionButton>
+            </button>
 
-            <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers, W. W. A. (2021). tidystats: Save output of statistical tests (Version 0.51) [Computer software]. https://doi.org/10.5281/zenodo.4041859').catch(alert)}>
+            <button className="action" onClick={() => serverFunctions.insertPlain('Sleegers, W. W. A. (2021). tidystats: Save output of statistical tests (Version 0.51) [Computer software]. https://doi.org/10.5281/zenodo.4041859').catch(alert)}>
                 Insert full citation
-            </ActionButton>
+            </button>
 
-            <ActionButton onClick={handleBibTexClick}>
+            <button className="action" onClick={handleBibTexClick}>
                 {bibTexButtonLabel}
-            </ActionButton>
+            </button>
         </>
     )
 }

@@ -1,9 +1,39 @@
 import { useState } from "react"
-import { Spinner, SpinnerSize } from "@fluentui/react"
+import { FontSizes, FontWeights } from "@fluentui/theme"
+import styled from "styled-components"
+// import { Spinner, SpinnerSize } from "@fluentui/react"
+import { PrimaryButton } from "@fluentui/react/lib/Button"
 
 import { Tidystats } from "../classes/Tidystats"
 
 import { serverFunctions } from '../../utils/serverFunctions';
+
+const Spinner = () => (
+    <div>
+        <div className="g_spinner">
+            <svg className="g_circular" viewBox="25 25 50 50">
+                <circle className="g_path" cx="50" cy="50" r="20" fill="none" strokeWidth="2" strokeMiterlimit="10" />
+            </svg>
+        </div>
+    </div>
+)
+
+const ActionHeader = styled.h3`
+  margin-bottom: 0;
+`
+
+const ActionInstructions = styled.p`
+  font-size: ${FontSizes.size14};
+  font-weight: ${FontWeights.regular};
+`
+
+const ActionButton = styled(PrimaryButton).attrs({
+    className: 'g_button action'
+})`
+  display: block;
+  margin-bottom: 0.5rem;
+  min-width: 180px;
+`
 
 type ActionsProps = {
     tidystats: Tidystats
@@ -27,7 +57,7 @@ const Actions = (props: ActionsProps) => {
     const updateButtonClicked = () => {
         setUpdateButtonLabel("Updating...");
         setUpdateButtonDisable(true);
-        setUpdateButtonSpinner(<> &nbsp; &nbsp; <Spinner size={SpinnerSize.medium} /></>);
+        setUpdateButtonSpinner(<> &nbsp; <Spinner /> </>);
     }
 
     const updateFinished = () => {
@@ -58,13 +88,13 @@ const Actions = (props: ActionsProps) => {
 
     return (
         <>
-            <h3>Actions:</h3>
-            <div>
+            <ActionHeader>Actions:</ActionHeader>
+            <ActionInstructions>
                 Automatically update all statistics in your document after uploading a
                 new statistics file.
-            </div>
+            </ActionInstructions>
 
-            <button className="action" disabled={updateButtonDisable} onClick={() => {
+            <ActionButton className='g_button action' disabled={updateButtonDisable} onClick={() => {
                 updateButtonClicked();
                 // must be send data stringified, because Google only allows JavaScript primitives
                 serverFunctions.updateStatistics(
@@ -72,23 +102,23 @@ const Actions = (props: ActionsProps) => {
                 ).then(updateFinished).catch(err => { alert(err); updateFinished(); });
             }}>
                 {updateButtonLabel} {updateButtonSpinner}
-            </button>
+            </ActionButton>
 
-            <div>
+            <ActionInstructions>
                 Was tidystats useful to you? If so, please consider citing it. Thanks!
-            </div>
+            </ActionInstructions>
 
-            <button className="action" onClick={() => serverFunctions.insertPlain('Sleegers (2021)').catch(alert)}>
+            <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers (2021)').catch(alert)}>
                 Insert in-text citation
-            </button>
+            </ActionButton>
 
-            <button className="action" onClick={() => serverFunctions.insertPlain('Sleegers, W. W. A. (2021). tidystats: Save output of statistical tests (Version 0.51) [Computer software]. https://doi.org/10.5281/zenodo.4041859').catch(alert)}>
+            <ActionButton onClick={() => serverFunctions.insertPlain('Sleegers, W. W. A. (2021). tidystats: Save output of statistical tests (Version 0.51) [Computer software]. https://doi.org/10.5281/zenodo.4041859').catch(alert)}>
                 Insert full citation
-            </button>
+            </ActionButton>
 
-            <button className="action" onClick={handleBibTexClick}>
+            <ActionButton className='g_button action' onClick={handleBibTexClick}>
                 {bibTexButtonLabel}
-            </button>
+            </ActionButton>
         </>
     )
 }

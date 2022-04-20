@@ -7,14 +7,25 @@ import { RowName } from "../components/RowName"
 import { IIconProps } from "@fluentui/react"
 import { IconButton } from "@fluentui/react/lib/Button"
 
+import { registerIcons } from '@fluentui/react/lib/Styling';
+
+registerIcons({
+  icons: {
+    'g_add': <span className="material-icons">add</span>,
+    'g_chev_right': <span className="material-icons">chevron_right</span>,
+    'g_chev_down': <span className="material-icons">expand_more</span>,
+    'g_settings': <span className="material-icons">settings</span>
+  }
+});
+
 export const Content = styled.div`
   padding-left: 16px;
 `
 
-const chevronDownIcon: IIconProps = { iconName: "ChevronDown" }
-const chevronRightIcon: IIconProps = { iconName: "ChevronRight" }
-const settingsIcon: IIconProps = { iconName: "Settings" }
-const addIcon: IIconProps = { iconName: "Add" }
+const chevronDownIcon: IIconProps = { iconName: "g_chev_down" }
+const chevronRightIcon: IIconProps = { iconName: "g_chev_right" }
+const settingsIcon: IIconProps = { iconName: "g_settings" }
+const addIcon: IIconProps = { iconName: "g_add" }
 
 interface CollapsibleProps {
   primary: boolean

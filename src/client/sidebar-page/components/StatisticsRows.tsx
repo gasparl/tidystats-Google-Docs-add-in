@@ -14,7 +14,15 @@ import { Collapsible } from "./Collapsible"
 import { Checkbox, IIconProps } from "@fluentui/react"
 import { IconButton } from "@fluentui/react/lib/Button"
 
-const addIcon: IIconProps = { iconName: "Add" }
+import { registerIcons } from '@fluentui/react/lib/Styling';
+
+registerIcons({
+  icons: {
+    'g_add': <span className="material-icons">add</span>
+  }
+});
+
+const addIcon: IIconProps = { iconName: "g_add" }
 
 // Create a new checkbox that aligns with the settings icon
 const MyCheckbox = styled(Checkbox)`

@@ -1,4 +1,5 @@
 export const onOpen = () => {
+
     const documentProperties = PropertiesService.getDocumentProperties();
     if (documentProperties.getProperty('tidyFontColor') === null) {
         documentProperties.setProperty('tidyFontColor', '#000000');

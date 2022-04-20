@@ -1,5 +1,7 @@
 import { useRef, useState, ChangeEvent } from "react"
 
+import { PrimaryButton } from "@fluentui/react/lib/Button"
+
 type FileInputProps = {
   initialFileName: string
   handleFile: Function
@@ -26,7 +28,7 @@ const FileInput = (props: FileInputProps) => {
 
   return (
     <>
-      <button className="action" onClick={handleClick}>{fileName}</button>
+      <PrimaryButton className='g_button action' onClick={handleClick}>{fileName}</PrimaryButton>
       <input
         type="file"
         accept="application/JSON"

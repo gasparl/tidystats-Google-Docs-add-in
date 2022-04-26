@@ -305,6 +305,7 @@ input[type="submit"].share:disabled {
 
 /* Google SPINNER */
 /* from: https://codepen.io/jczimm/pen/vEBpoL */
+/* https://westonganger.com/posts/simple-google-loader-using-svg-and-css */
 
 .g_spinner {
   position: relative;

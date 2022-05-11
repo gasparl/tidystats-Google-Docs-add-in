@@ -86,40 +86,39 @@ const insertStatistics = (statistics: StatisticProps[]) => {
                 insertNamedRange(lower.value, lower.identifier, ',')
                 insertNamedRange(upper.value, upper.identifier, ']' + suffix)
             } else {
-                if (statistic.name === "statistic") {
-                    if (
-                        statistic.symbol === "t" &&
-                        statistics.find((x: StatisticProps) => x.name === "df")
-                    ) {
-                        appendText(statistic.symbol, true)
-                        appendText("(")
+                if (
+                    statistic.symbol === "t" &&
+                    statistics.find((x: StatisticProps) => x.name === "df")
+                ) {
+                    appendText(statistic.symbol, true)
+                    appendText("(")
 
-                        const df = statistics.find((x: StatisticProps) => x.name === "df")
-                        if (df) {
-                            insertNamedRange(df.value, df.identifier, ')')
-                        }
-                    } else if (
-                        statistic.symbol === "F" &&
-                        statistics.find((x: StatisticProps) => x.name === "df numerator") &&
-                        statistics.find((x: StatisticProps) => x.name === "df denominator")
-                    ) {
-                        appendText(statistic.symbol, true)
-                        appendText("(")
-
-                        const dfNum = statistics.find(
-                            (x: StatisticProps) => x.name === "df numerator"
-                        )
-                        if (dfNum) {
-                            insertNamedRange(dfNum.value, dfNum.identifier, ', ')
-                        }
-                        const dfDen = statistics.find(
-                            (x: StatisticProps) => x.name === "df denominator"
-                        )
-                        if (dfDen) {
-                            insertNamedRange(dfDen.value, dfDen.identifier, ')')
-                        }
+                    const df = statistics.find((x: StatisticProps) => x.name === "df")
+                    if (df) {
+                        insertNamedRange(df.value, df.identifier, ')')
                     }
-                } else {
+                } else if (
+                    statistic.symbol === "F" &&
+                    statistics.find((x: StatisticProps) => x.name === "df numerator") &&
+                    statistics.find((x: StatisticProps) => x.name === "df denominator")
+                ) {
+                    appendText(statistic.symbol, true)
+                    appendText("(")
+
+                    const dfNum = statistics.find(
+                        (x: StatisticProps) => x.name === "df numerator"
+                    )
+                    if (dfNum) {
+                        insertNamedRange(dfNum.value, dfNum.identifier, ', ')
+                    }
+                    const dfDen = statistics.find(
+                        (x: StatisticProps) => x.name === "df denominator"
+                    )
+                    if (dfDen) {
+                        insertNamedRange(dfDen.value, dfDen.identifier, ')')
+                    }
+                }
+                else {
                     appendText(statistic.symbol, true)
                     if (statistic.subscript) {
                         appendText(statistic.subscript).setTextAlignment(DocumentApp.TextAlignment.SUBSCRIPT);

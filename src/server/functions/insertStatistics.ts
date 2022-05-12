@@ -87,7 +87,7 @@ const insertStatistics = (statistics: StatisticProps[]) => {
                 insertNamedRange(upper.value, upper.identifier, ']' + suffix)
             } else {
                 if (
-                    statistic.symbol === "t" &&
+                    ["t", "χ²"].includes(statistic.symbol) &&
                     statistics.find((x: StatisticProps) => x.name === "df")
                 ) {
                     appendText(statistic.symbol, true)

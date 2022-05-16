@@ -58,6 +58,8 @@ const formatValue = (
                 if (name === "p") {
                     if (x.value < 0.001) {
                         value = "< .001"
+                    } else if (x.value == 1) {
+                        value = "1"
                     }
                 }
             }

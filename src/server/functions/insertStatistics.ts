@@ -83,11 +83,11 @@ const insertStatistics = (statistics: StatisticProps[]) => {
             if (statistic.name === "lower" && lower && upper) {
                 appendText(statistic.symbol)
                 appendText(" [")
-                insertNamedRange(lower.value, lower.identifier, ',')
+                insertNamedRange(lower.value, lower.identifier, ', ')
                 insertNamedRange(upper.value, upper.identifier, ']' + suffix)
             } else {
                 if (
-                    ["t", "χ²"].includes(statistic.symbol) &&
+                    ["t", "χ²", "K²", "CMH", "OR"].includes(statistic.symbol) &&
                     statistics.find((x: StatisticProps) => x.name === "df")
                 ) {
                     appendText(statistic.symbol, true)

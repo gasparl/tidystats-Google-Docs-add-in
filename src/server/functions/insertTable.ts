@@ -113,7 +113,7 @@ const splitParagraphAt = (pos) => {
 const insertValue = (table, rownum: number, colnum: number, value, tag = null) => {
     doc.setCursor(doc.newPosition(table.getCell(rownum, colnum), 0));
     const cursor = doc.getCursor();
-    const cElement : any = cursor.insertText(value);
+    const cElement: any = cursor.insertText(value);
     if (tag !== null) {
         insertURL(cElement, tag)
     }
@@ -147,7 +147,11 @@ const insertTable = (name: string, groups?: Group[]) => {
 
         // Set the content of the remaining cells in the first row to the names of the statistics
         groups[0].statistics.forEach((statistic, i) => {
-            insertValue(table, 0, i + 1, statistic.symbol ? statistic.symbol : statistic.name).setItalic(true);
+            if (name === "P-values") {
+                insertValue(table, 0, i + 1, statistic.subscript);
+            } else {
+                insertValue(table, 0, i + 1, statistic.symbol ? statistic.symbol : statistic.name).setItalic(true);
+            }
         })
 
         // Loop over each group and set the name and values

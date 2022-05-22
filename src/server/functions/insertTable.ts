@@ -132,24 +132,26 @@ const insertTable = (name: string, groups?: string) => {
     } else if (grps && grps[0].statistics) {
 
         // add CIs as separate columns
-        for (let i = 0; i < grps[0].statistics.length; i++) {
-            let statistic: any = grps[0].statistics[i]
-            if (Object.keys(statistic).includes("lower") &&
-                Object.keys(statistic).includes("upper")) {
-                grps[0].statistics.splice(i + 1, 0, {
-                    identifier: statistic.identifier + "$lower",
-                    name: "CI (lower)",
-                    subscript: "lower",
-                    symbol: "CI",
-                    value: statistic.lower
-                });
-                grps[0].statistics.splice(i + 2, 0, {
-                    identifier: statistic.identifier + "$upper",
-                    name: "CI (upper)",
-                    subscript: "upper",
-                    symbol: "CI",
-                    value: statistic.upper
-                });
+        for (let j = 0; j < grps.length; j++) {
+            for (let i = 0; i < grps[j].statistics.length; i++) {
+                let statistic: any = grps[j].statistics[i]
+                if (Object.keys(statistic).includes("lower") &&
+                    Object.keys(statistic).includes("upper")) {
+                    grps[j].statistics.splice(i + 1, 0, {
+                        identifier: statistic.identifier + "$lower",
+                        name: "CI (lower)",
+                        subscript: "lower",
+                        symbol: "CI",
+                        value: statistic.lower
+                    });
+                    grps[j].statistics.splice(i + 2, 0, {
+                        identifier: statistic.identifier + "$upper",
+                        name: "CI (upper)",
+                        subscript: "upper",
+                        symbol: "CI",
+                        value: statistic.upper
+                    });
+                }
             }
         }
 

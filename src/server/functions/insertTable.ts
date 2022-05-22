@@ -121,16 +121,40 @@ const insertValue = (table, rownum: number, colnum: number, value, tag = null) =
 }
 
 
-const insertTable = (name: string, groups?: Group[]) => {
+const insertTable = (name: string, groups?: string) => {
     const cursor = doc.getCursor();
+    const grps: Group[] = JSON.parse(groups)
 
     // Make sure cursor is found
-    // Make sure there are groups and that there are statistics
+    // Make sure there are grps and that there are statistics
     if (!cursor) {
         DocumentApp.getUi().alert('Could not insert table; the cursor should indicate the position.');
-    } else if (groups && groups[0].statistics) {
-        const rows = groups.length + 1
-        const columns = groups[0].statistics ?.length + 1
+    } else if (grps && grps[0].statistics) {
+
+        // add CIs as separate columns
+        for (let i = 0; i < grps[0].statistics.length; i++) {
+            let statistic: any = grps[0].statistics[i]
+            if (Object.keys(statistic).includes("lower") &&
+                Object.keys(statistic).includes("upper")) {
+                grps[0].statistics.splice(i + 1, 0, {
+                    identifier: statistic.identifier + "$lower",
+                    name: "CI (lower)",
+                    subscript: "lower",
+                    symbol: "CI",
+                    value: statistic.lower
+                });
+                grps[0].statistics.splice(i + 2, 0, {
+                    identifier: statistic.identifier + "$upper",
+                    name: "CI (upper)",
+                    subscript: "upper",
+                    symbol: "CI",
+                    value: statistic.upper
+                });
+            }
+        }
+
+        const rows = grps.length + 1
+        const columns = grps[0].statistics ?.length + 1
 
         const el = (cursor.getOffset() == 0 ? cursor.getElement() : splitParagraphAt(cursor));
         const parentEl = el.getParent();
@@ -146,16 +170,25 @@ const insertTable = (name: string, groups?: Group[]) => {
         insertValue(table, 0, 0, name)
 
         // Set the content of the remaining cells in the first row to the names of the statistics
-        groups[0].statistics.forEach((statistic, i) => {
+        grps[0].statistics.forEach((statistic, i) => {
             if (name === "P-values") {
                 insertValue(table, 0, i + 1, statistic.subscript);
             } else {
-                insertValue(table, 0, i + 1, statistic.symbol ? statistic.symbol : statistic.name).setItalic(true);
+                let subs = ""
+                if (statistic.subscript) {
+                    subs = statistic.subscript
+                }
+                let header = (statistic.symbol ? statistic.symbol : statistic.name) + subs;
+                let inserted = insertValue(table, 0, i + 1, header);
+                inserted.setItalic(0, header.length - subs.length - 1, true);
+                if (statistic.subscript) {
+                    inserted.setTextAlignment(header.length - subs.length, header.length - 1, DocumentApp.TextAlignment.SUBSCRIPT);
+                }
             }
         })
 
         // Loop over each group and set the name and values
-        groups.forEach((group, i) => {
+        grps.forEach((group, i) => {
             insertValue(table, i + 1, 0, group.name)
             group.statistics ?.forEach((statistic, j) => {
                 insertValue(table, i + 1, j + 1, formatValue(statistic, 2), statistic.identifier)

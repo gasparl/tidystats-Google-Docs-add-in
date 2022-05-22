@@ -45,10 +45,10 @@ const GroupRows = (props: GroupRowsProps) => {
 
   // Add addTable() function, but only in some cases
   let addTable = false
-  if (name === "Coefficients" || name === "P-values") addTable = true
+  if (name.startsWith("Coefficients") || name === "P-values") addTable = true
 
   const handleAddClick = () => {
-    serverFunctions.insertTable(name, groups).catch(alert)
+    serverFunctions.insertTable(name, JSON.stringify(groups)).catch(alert)
   }
 
   return (

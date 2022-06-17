@@ -1,4 +1,4 @@
-export const tidyID = '#!tidystats!: keep this link intact for updatable values. # ';
+export const tidyID = 'tidystats.io/#id=';
 
 const tidyFontColor = PropertiesService.getDocumentProperties().getProperty('tidyFontColor');
 

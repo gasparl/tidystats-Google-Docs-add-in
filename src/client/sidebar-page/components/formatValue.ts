@@ -3,6 +3,8 @@ import { Statistic, RangedStatistic } from "../classes/Statistic"
 const SMOL = ["p", "r", "R²", "P"]
 const INTEGERS = ["df", "df numerator", "df denominator", "count", "lag"]
 
+const isNumeric = num => /^-?[0-9]+(?:\.[0-9]+)?$/.test(num+'');
+
 const formatValue = (
     x: Statistic | RangedStatistic,
     decimals: number,
@@ -30,6 +32,10 @@ const formatValue = (
         }
     } else {
         value = x.value
+    }
+
+    if (isNumeric(value)) {
+        value = Number(value)
     }
 
     if (typeof value == "number") {

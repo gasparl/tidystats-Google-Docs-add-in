@@ -36,6 +36,8 @@ const formatValue = (
 
     if (isNumeric(value)) {
         value = Number(value)
+    } else if (value == "") {
+        value = "-"
     }
 
     if (typeof value == "number") {

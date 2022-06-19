@@ -141,14 +141,14 @@ const insertTable = (name: string, groups?: string) => {
                         identifier: statistic.identifier + "$lower",
                         name: "CI (lower)",
                         subscript: "lower",
-                        symbol: "CI",
+                        symbol: statistic.interval,
                         value: statistic.lower
                     });
                     grps[j].statistics.splice(i + 2, 0, {
                         identifier: statistic.identifier + "$upper",
                         name: "CI (upper)",
                         subscript: "upper",
-                        symbol: "CI",
+                        symbol: statistic.interval,
                         value: statistic.upper
                     });
                 }

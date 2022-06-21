@@ -3,7 +3,11 @@ import { Statistic, RangedStatistic } from "../classes/Statistic"
 const SMOL = ["p", "r", "R²", "P"]
 const INTEGERS = ["df", "df numerator", "df denominator", "count", "lag"]
 
-const isNumeric = num => /^-?[0-9]+(?:\.[0-9]+)?$/.test(num+'');
+const isNumeric = str => {
+  str = str.trim();
+  return !isNaN(str) &&
+         !isNaN(parseFloat(str));
+}
 
 const formatValue = (
     x: Statistic | RangedStatistic,

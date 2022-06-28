@@ -12,6 +12,7 @@ import { registerIcons } from '@fluentui/react/lib/Styling';
 registerIcons({
   icons: {
     'g_add': <span className="material-icons">add</span>,
+    'g_table': <span className="material-icons">add_box</span>,
     'g_chev_right': <span className="material-icons">chevron_right</span>,
     'g_chev_down': <span className="material-icons">expand_more</span>,
     'g_settings': <span className="material-icons">settings</span>
@@ -26,6 +27,7 @@ const chevronDownIcon: IIconProps = { iconName: "g_chev_down" }
 const chevronRightIcon: IIconProps = { iconName: "g_chev_right" }
 const settingsIcon: IIconProps = { iconName: "g_settings" }
 const addIcon: IIconProps = { iconName: "g_add" }
+const addTableIcon: IIconProps = { iconName: "g_table" }
 
 interface CollapsibleProps {
   primary: boolean
@@ -36,6 +38,7 @@ interface CollapsibleProps {
   content: ReactNode
   open?: boolean
   disabled?: boolean
+  table?: boolean
 }
 
 const Collapsible = (props: CollapsibleProps) => {
@@ -48,6 +51,7 @@ const Collapsible = (props: CollapsibleProps) => {
     content,
     open,
     disabled,
+    table,
   } = props
 
   const [isOpen, setIsOpen] = useState(open)
@@ -78,7 +82,7 @@ const Collapsible = (props: CollapsibleProps) => {
         </>
         <>
           {handleAddClick && (
-            <IconButton iconProps={addIcon} onClick={() => handleAddClick()} />
+            <IconButton iconProps={table ? addTableIcon : addIcon} onClick={() => handleAddClick()} />
           )}
         </>
       </Row>

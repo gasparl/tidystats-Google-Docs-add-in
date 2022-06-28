@@ -4,9 +4,11 @@ const SMOL = ["p", "r", "R²", "P"]
 const INTEGERS = ["df", "df numerator", "df denominator", "count", "lag"]
 
 const isNumeric = str => {
-  str = str.trim();
-  return !isNaN(str) &&
-         !isNaN(parseFloat(str));
+    if (typeof str.trim === "function") {
+        str = str.trim();
+    }
+    return !isNaN(str) &&
+        !isNaN(parseFloat(str));
 }
 
 const formatValue = (

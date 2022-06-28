@@ -88,6 +88,20 @@ const updateStatistics = (tidystatsAnalyses, replaceAll = false) => {
     // furthermore, the delay helps locking the document for sufficient time
 }
 
+
+const unlinkAll = () => {
+    lock.tryLock(0);
+    if (!lock.hasLock()) {
+        DocumentApp.getUi().alert('The server seems busy at the moment. Perhaps other users are updating the statistics. Please try again later.');
+        return;
+    }
+    for (const link of getAllLinks()) {
+        link.text.setLinkUrl(link.startOffset, link.endOffsetInclusive, null);
+    }
+    closeDialog();
+    Utilities.sleep(1000)
+}
+
 const closeDialog = () => {
     DocumentApp.getUi().showModalDialog(
         HtmlService.createHtmlOutput('<script>google.script.host.close();</script>'),
@@ -305,4 +319,4 @@ const findStatistic = (id: string, analyses) => {
 }
 
 
-export { updateStatistics, updateColor, getColor }
+export { updateStatistics, updateColor, getColor, unlinkAll }

@@ -57,7 +57,7 @@ export const DialogColor = () => {
     return (
         <>
             <ActionInstructions>
-                Here you can replace all updatable statistics (inserted number values) with a value specified below. (This is intended for temporarily masking the actual numeric results, e.g. for registered reports.)
+                Here you can replace all updatable <i>tidystats</i> statistics (inserted values) with a value specified below. (This is intended for temporarily masking the actual numeric results, e.g. for registered reports.)
                 <br></br>
                 <br></br>
                 <p className='gray'>

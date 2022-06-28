@@ -9,6 +9,7 @@ export const onOpen = () => {
         .addItem('Insert statistics', 'openSidebar')
         .addItem('Font color', 'openDialogColor')
         .addItem('Replace all', 'openDialogReplace')
+        .addItem('Unlink all', 'openDialogUnlink')
         .addToUi();
 };
 
@@ -27,4 +28,9 @@ export const openDialogColor = () => {
 export const openDialogReplace = () => {
     const html = HtmlService.createHtmlOutputFromFile('dialog-replace-page');
     DocumentApp.getUi().showModalDialog(html, 'tidystats: replace all');
+};
+
+export const openDialogUnlink = () => {
+    const html = HtmlService.createHtmlOutputFromFile('dialog-unlink-page');
+    DocumentApp.getUi().showModalDialog(html, 'tidystats: unlink all');
 };

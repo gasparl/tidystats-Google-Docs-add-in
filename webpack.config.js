@@ -59,6 +59,12 @@ const clientEntrypoints = [{
         entry: './src/client/dialog-replace-page/index.tsx',
         filename: 'dialog-replace-page',
         template: './src/client/dialog-replace-page/index.html',
+    },
+    {
+        name: 'CLIENT - DialogUnlink',
+        entry: './src/client/dialog-unlink-page/index.tsx',
+        filename: 'dialog-unlink-page',
+        template: './src/client/dialog-unlink-page/index.html',
     }
 ];
 

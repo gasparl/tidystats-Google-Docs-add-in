@@ -185,6 +185,8 @@ const insertTable = (name: string, groups?: string) => {
                 inserted.setItalic(0, header.length - subs.length - 1, true);
                 if (statistic.subscript) {
                     inserted.setTextAlignment(header.length - subs.length, header.length - 1, DocumentApp.TextAlignment.SUBSCRIPT);
+                } else if (header == "ηG²") {
+                    inserted.setTextAlignment(1, 1, DocumentApp.TextAlignment.SUBSCRIPT);
                 }
             }
         })

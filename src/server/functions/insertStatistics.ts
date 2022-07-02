@@ -28,6 +28,9 @@ const insertNamedRange = (statistic: string, id: string, suffix: string) => {
 
 const appendText = (newText, italic = false) => {
     const txt: any = cursor.insertText(newText)
+    if (newText == "ηG²") {
+        txt.setTextAlignment(1, 1, DocumentApp.TextAlignment.SUBSCRIPT);
+    }
     doc.setCursor(doc.newPosition(txt, newText.length));
     txt.setItalic(italic);
     return (txt)
